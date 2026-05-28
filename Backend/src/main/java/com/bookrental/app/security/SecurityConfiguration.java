@@ -13,7 +13,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 @Configuration
@@ -25,6 +29,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    Converter<Jwt, Collection<GrantedAuthority>> converterImplementation) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
@@ -40,6 +45,12 @@ public class SecurityConfiguration {
                                 //.requestMatchers("/authors/**").permitAll()
                                 //.requestMatchers("/publishers/**").permitAll()
                                 //.requestMatchers("/books/**").permitAll()
+                                .requestMatchers(
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**",
+                                        "/api/v3/api-docs/**"
+                                ).permitAll()
 
                                 .anyRequest()
                                 .authenticated()
@@ -59,5 +70,17 @@ public class SecurityConfiguration {
         converter.setJwtGrantedAuthoritiesConverter(converterImplementation);
 
         return converter;
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Permitem React-ului
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

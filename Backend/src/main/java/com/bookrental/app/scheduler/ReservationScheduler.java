@@ -36,7 +36,7 @@ public class ReservationScheduler {
         this.userRepository = userRepository;
     }
 
-    @Scheduled(fixedRate = 5000)
+    /*@Scheduled(fixedRate = 5000)
     public void scheduled() {
         System.out.println("Hello from my scheduled");
     }
@@ -45,6 +45,7 @@ public class ReservationScheduler {
     public void scheduledCron() {
         System.out.println("Hello from my scheduled with cron!");
     }
+    */
 
     @Transactional
     @Scheduled(cron = "0 0 1 * * *")
