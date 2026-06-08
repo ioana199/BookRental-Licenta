@@ -37,12 +37,15 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Exemplary> exemplaries;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "wishlist_id")
-    private Wishlist wishlist;
+    @JsonIgnore
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    private List<Wishlist> wishlists;
 
     @Column(name = "contorRezervari")
-    private int contorRezervari = 0;
+    private Integer contorRezervari = 0;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     /*
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -120,19 +123,27 @@ public class Book {
         this.exemplaries = exemplaries;
     }
 
-    public Wishlist getWishlist() {
-        return wishlist;
+    public List<Wishlist> getWishlists() {
+        return wishlists;
     }
 
-    public void setWishlist(Wishlist wishlist) {
-        this.wishlist = wishlist;
+    public void setWishlists(List<Wishlist> wishlists) {
+        this.wishlists = wishlists;
     }
 
-    public int getContorRezervari() {
+    public Integer getContorRezervari() {
         return contorRezervari;
     }
 
-    public void setContorRezervari(int contorRezervari) {
+    public void setContorRezervari(Integer contorRezervari) {
         this.contorRezervari = contorRezervari;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

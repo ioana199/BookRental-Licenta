@@ -1,0 +1,22 @@
+:root {
+  --color-bg-primary: #FDF8F5;
+  --color-bg-secondary: #F5EDE3;
+  --color-salmon-light: #F5C6A0;
+  --color-salmon-medium: #E8896A;
+  --color-salmon-dark: #C45C3A;
+  --color-text-dark: #3D2314;
+  --color-text-secondary: #7D5A4F;
+  --color-white: #FFFFFF;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

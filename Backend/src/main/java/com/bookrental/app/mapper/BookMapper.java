@@ -12,8 +12,7 @@ public class BookMapper {
         book.setTitle(bookRequestDTO.getTitle());
         book.setISBN(bookRequestDTO.getISBN());
         book.setPublicationDate(bookRequestDTO.getPublicationDate());
-        //book.setAuthor(bookRequestDTO.getAuthor());
-        //book.setPublisher(bookRequestDTO.getPublisher());
+        book.setImageUrl(bookRequestDTO.getImageUrl());
 
         return book;
     }
@@ -25,8 +24,16 @@ public class BookMapper {
         bookResponseDTO.setTitle(book.getTitle());
         bookResponseDTO.setISBN(book.getISBN());
         bookResponseDTO.setPublicationDate(book.getPublicationDate());
-        bookResponseDTO.setAuthor(book.getAuthor());
-        bookResponseDTO.setPublisher(book.getPublisher());
+        if (book.getAuthor() != null) {
+            bookResponseDTO.setAuthorFirstName(book.getAuthor().getFirstName());
+        }
+        if (book.getAuthor() != null) {
+            bookResponseDTO.setAuthorLastName(book.getAuthor().getLastName());
+        }
+        if (book.getPublisher() != null) {
+            bookResponseDTO.setPublisherName(book.getPublisher().getName());
+        }
+        bookResponseDTO.setImageUrl(book.getImageUrl());
 
         return bookResponseDTO;
     }

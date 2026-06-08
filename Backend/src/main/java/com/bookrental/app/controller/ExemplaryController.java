@@ -24,9 +24,9 @@ public class ExemplaryController {
     }
 
     @PostMapping("/{bookId}/{libraryId}/{nrToCreate}")
-    public ResponseEntity<List<Exemplary>> create(@PathVariable Long bookId,
+    public ResponseEntity<?> create(@PathVariable Long bookId,
                                                   @PathVariable Long libraryId,
                                                   @PathVariable int nrToCreate) {
-        return ResponseEntity.status(201).body(exemplaryService.create(bookId, libraryId, nrToCreate));
-    }
+        exemplaryService.create(bookId, libraryId, nrToCreate);
+        return ResponseEntity.status(201).body("Au fost create " + nrToCreate + " exemplare.");    }
 }

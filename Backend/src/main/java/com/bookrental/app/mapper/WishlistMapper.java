@@ -20,6 +20,8 @@ public class WishlistMapper {
         wishlistResponseDTO.setDate(wishlist.getDate());
         wishlistResponseDTO.setBookName(wishlist.getBook().getTitle());
         wishlistResponseDTO.setUserFirstName(wishlist.getUser().getFirstName());
+        wishlistResponseDTO.setBookId(wishlist.getBook().getId());
+        wishlistResponseDTO.setImageUrl(wishlist.getBook().getImageUrl());
 
         return wishlistResponseDTO;
     }

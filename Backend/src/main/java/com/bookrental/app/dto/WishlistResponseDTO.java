@@ -11,6 +11,24 @@ public class WishlistResponseDTO {
     private LocalDate date;
     private String  userFirstName;
     private String bookName;
+    private Long bookId;
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
 
     public Long getId() {
         return id;

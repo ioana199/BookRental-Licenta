@@ -12,6 +12,7 @@ public class ReservationResponseDTO {
     private Long userId;
     private Long exemplaryId;
     private StatusReservation status;
+    private String bookName;
 
     public Long getId() {
         return id;
@@ -59,5 +60,13 @@ public class ReservationResponseDTO {
 
     public void setStatus(StatusReservation status) {
         this.status = status;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 }

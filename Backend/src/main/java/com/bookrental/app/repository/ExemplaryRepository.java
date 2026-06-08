@@ -29,6 +29,7 @@ public interface ExemplaryRepository extends JpaRepository<Exemplary, Long> {
             @Param("bookId") Long bookId,
             @Param("libraryId") Long libraryId,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            @Param("tomorrow") LocalDate tomorrow
     );
 }

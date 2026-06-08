@@ -67,4 +67,23 @@ public class WishlistController {
                 .map(WishlistMapper::mapWishlist2WishlistDTO));
     }
 
+    @GetMapping("/my")
+    @PreAuthorize("hasAuthority('ROLE_realm_user')")
+    public ResponseEntity<Page<WishlistResponseDTO>> getMy(
+            @RequestParam(required = false, name = "page", defaultValue = "1") Integer page,
+            @RequestParam(required = false, name = "size", defaultValue = "20") Integer size,
+            Principal principal) {
+        try {
+            page -= 1;
+            System.out.println("Principal: " + principal.getName());
+            Page<Wishlist> wishlists = wishlistService.getByUserId(Long.parseLong(principal.getName()), PageRequest.of(page, size));
+            System.out.println("Wishlists size: " + wishlists.getTotalElements());
+            Page<WishlistResponseDTO> result = wishlists.map(WishlistMapper::mapWishlist2WishlistDTO);
+            return ResponseEntity.status(200).body(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 }

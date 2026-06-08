@@ -42,10 +42,17 @@ public class BookService {
         return bookRepository.save(bookToCreate);
     }
 
+    @Transactional
     public List<Book> getAll() {
-        return bookRepository.findAll();
-    }
 
+        try {
+            return bookRepository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }    }
+
+    @Transactional
     public Book getById(Long bookId) {
         return bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
     }
@@ -56,6 +63,7 @@ public class BookService {
         foundBook.setTitle(book.getTitle());
         foundBook.setISBN(book.getISBN());
         foundBook.setPublicationDate(book.getPublicationDate());
+        foundBook.setImageUrl(book.getImageUrl());
 
         if (authorId != null) {
             Author foundAuthor = authorRepository.findById(authorId).orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + authorId));
@@ -75,6 +83,7 @@ public class BookService {
         bookRepository.delete(book);
     }
 
+    @Transactional
     public Page<Book> paginate(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }

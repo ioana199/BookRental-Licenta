@@ -38,7 +38,7 @@ public class Library {
     private List<Review> reviews;
 
     @Column(name = "medieRating")
-    private float medieRating = 0;
+    private Float medieRating = (float) 0;
 
     public Long getId() {
         return id;
@@ -104,7 +104,7 @@ public class Library {
         this.reviews = reviews;
     }
 
-    public float getMedieRating() {
+    public Float getMedieRating() {
         return medieRating;
     }
 
