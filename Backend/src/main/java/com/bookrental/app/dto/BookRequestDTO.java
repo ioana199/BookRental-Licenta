@@ -17,8 +17,7 @@ public class BookRequestDTO {
     @NotBlank(message = "ISBN is required!")
     private String ISBN;
     private LocalDate publicationDate;
-    private Publisher publisher;
-    private Author author;
+    private String imageUrl;
 
     public Long getId() {
         return id;
@@ -52,19 +51,11 @@ public class BookRequestDTO {
         this.publicationDate = publicationDate;
     }
 
-    public Publisher getPublisher() {
-        return publisher;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

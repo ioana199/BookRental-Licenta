@@ -42,12 +42,14 @@ public class ReviewController {
     }
 
     @GetMapping("/getAll/{libraryId}")
-    public ResponseEntity<Page<ReviewResponseDTO>> getAll(@RequestParam(required = false, name = "page", defaultValue = "1") Integer page,
-                                                          @RequestParam(required = false, name = "size", defaultValue = "5") Integer size,
-                                                          @RequestParam(required = false, name = "sortBy", defaultValue = "id") String sortBy) {
+    public ResponseEntity<Page<ReviewResponseDTO>> getAll(
+            @PathVariable Long libraryId,
+            @RequestParam(required = false, name = "page", defaultValue = "1") Integer page,
+            @RequestParam(required = false, name = "size", defaultValue = "5") Integer size,
+            @RequestParam(required = false, name = "sortBy", defaultValue = "id") String sortBy) {
         page -= 1;
         return ResponseEntity.status(200).body(reviewService
-                .getAll(PageRequest.of(page, size, Sort.by(sortBy)))
+                .getAll(libraryId, PageRequest.of(page, size, Sort.by(sortBy)))
                 .map(ReviewMapper::mapReview2ReviewDTO));
     }
 

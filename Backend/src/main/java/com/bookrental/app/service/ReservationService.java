@@ -8,10 +8,10 @@ import com.sun.codemodel.JForEach;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.SystemException;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.keycloak.jose.jwk.JWK;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -121,7 +121,7 @@ public class ReservationService {
     }
     */
 
-    @Transactional
+    /*@Transactional
     public Reservation create(Long bookId, Long libraryId, LocalDate startDate, LocalDate endDate, Long userId) {
 
         List<Exemplary> exemplars = exemplaryRepository.findAvailableExemplar(bookId, libraryId, startDate, endDate);
@@ -143,6 +143,33 @@ public class ReservationService {
         reserveMail(user.getEmail());
         updateContor(reservation);
         return reservationRepository.save(reservation);
+    }*/
+
+    @Transactional
+    public Reservation create(Long bookId, Long libraryId, LocalDate startDate, LocalDate endDate, Long userId) {
+        try {
+            List<Exemplary> exemplars = exemplaryRepository.findAvailableExemplar(bookId, libraryId, startDate, endDate,  LocalDate.now().plusDays(1));
+            if (exemplars.isEmpty()) {
+                throw new NotFoundException("No books available, try again later.");
+            }
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+            Reservation reservation = new Reservation();
+            reservation.setExemplary(exemplars.getFirst());
+            reservation.setStartDate(startDate);
+            reservation.setEndDate(endDate);
+            reservation.setUser(user);
+            reservation.setStatus(StatusReservation.PENDING);
+
+            reserveMail(user.getEmail());
+            updateContor(reservation);
+            return reservationRepository.save(reservation);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public Reservation updateReservationStatus(Long reservationId, StatusReservation newStatus) {
@@ -166,7 +193,23 @@ public class ReservationService {
     }
 
     private void updateContor(Reservation reservation) {
-        int contorVechi = reservation.getExemplary().getBook().getContorRezervari();
+        Integer contorVechi = reservation.getExemplary().getBook().getContorRezervari();
+        if (contorVechi == null) contorVechi = 0;
         reservation.getExemplary().getBook().setContorRezervari(++contorVechi);
+    }
+
+    @Transactional
+    public List<Reservation> getAll() {
+        return reservationRepository.findAll();
+    }
+
+    @Transactional
+    public List<Reservation> getByUserId(Long userId) {
+        try {
+            return reservationRepository.findAllByUserId(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

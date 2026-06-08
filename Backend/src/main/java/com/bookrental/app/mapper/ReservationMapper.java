@@ -20,9 +20,9 @@ public class ReservationMapper {
         reservationResponseDTO.setId(reservation.getId());
         reservationResponseDTO.setStartDate(reservation.getStartDate());
         reservationResponseDTO.setEndDate(reservation.getEndDate());
-        reservationResponseDTO.setExemplaryId(reservation.getExemplary().getId());
         reservationResponseDTO.setUserId(reservation.getUser().getId());
         reservationResponseDTO.setStatus(reservation.getStatus());
+        reservationResponseDTO.setBookName(reservation.getExemplary().getBook().getTitle());
 
         return reservationResponseDTO;
     }

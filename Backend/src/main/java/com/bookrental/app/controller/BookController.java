@@ -9,6 +9,7 @@ import com.bookrental.app.entities.Book;
 import com.bookrental.app.mapper.AuthorMapper;
 import com.bookrental.app.mapper.BookMapper;
 import com.bookrental.app.service.BookService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

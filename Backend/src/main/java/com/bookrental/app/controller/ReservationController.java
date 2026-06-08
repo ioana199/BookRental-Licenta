@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
@@ -49,10 +50,30 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('ROLE_realm_librarian')")
+    @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_role_admin')")
     public ResponseEntity<Reservation> updateStatus(@PathVariable Long id, @RequestParam StatusReservation newStatus) {
         Reservation updatedReservation = reservationService.updateReservationStatus(id, newStatus);
 
         return ResponseEntity.ok(updatedReservation);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_role_admin')")
+    public ResponseEntity<List<ReservationResponseDTO>> getAll() {
+        List<Reservation> reservations = reservationService.getAll();
+        List<ReservationResponseDTO> dtos = reservations.stream()
+                .map(ReservationMapper::mapReservation2ReservationResponseDTO)
+                .toList();
+        return ResponseEntity.status(200).body(dtos);
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("hasAuthority('ROLE_realm_user')")
+    public ResponseEntity<List<ReservationResponseDTO>> getMy(Principal principal) {
+        List<Reservation> reservations = reservationService.getByUserId(Long.parseLong(principal.getName()));
+        List<ReservationResponseDTO> dtos = reservations.stream()
+                .map(ReservationMapper::mapReservation2ReservationResponseDTO)
+                .toList();
+        return ResponseEntity.status(200).body(dtos);
     }
 }

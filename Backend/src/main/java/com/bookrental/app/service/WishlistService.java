@@ -5,12 +5,12 @@ import com.bookrental.app.repository.BookRepository;
 import com.bookrental.app.repository.UserRepository;
 import com.bookrental.app.repository.WishlistRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -40,6 +40,7 @@ public class WishlistService {
         return wishlistRepository.save(wishlist);
     }
 
+    @Transactional
     public void delete(Long bookId, Long userId) {
         Wishlist wishlist = wishlistRepository.findByBookIdAndUserId(bookId, userId);
         wishlistRepository.delete(wishlist);
@@ -79,5 +80,15 @@ public class WishlistService {
         Example<Wishlist> exampleWishlist = Example.of(wishlist, matcher);
 
         return wishlistRepository.findAll(exampleWishlist, pageable);
+    }
+
+    @Transactional
+    public Page<Wishlist> getByUserId(Long userId, Pageable pageable) {
+        try {
+            return wishlistRepository.findByUserId(userId, pageable);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

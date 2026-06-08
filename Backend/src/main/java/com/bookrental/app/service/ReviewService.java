@@ -7,12 +7,13 @@ import com.bookrental.app.repository.ReservationRepository;
 import com.bookrental.app.repository.ReviewRepository;
 import com.bookrental.app.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,31 +34,44 @@ public class ReviewService {
 
     @Transactional
     public Review create(Review review, Long libraryId, Long userId) {
-        User foundUser = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        try {
+            User foundUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
-        Library foundLibrary = libraryRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Library not found with id: " + libraryId));
+            Library foundLibrary = libraryRepository.findById(libraryId)
+                    .orElseThrow(() -> new EntityNotFoundException("Library not found with id: " + libraryId));
 
-        if (reservationRepository.findAllByUserIdAndStatus(userId, StatusReservation.FINISHED) == null) {
-            throw new IllegalArgumentException("You don't have any finished reservations");
+            List<Reservation> finishedReservations = reservationRepository
+                    .findAllByUserIdAndStatus(userId, StatusReservation.FINISHED);
+
+            System.out.println("Finished reservations: " + finishedReservations.size());
+
+            boolean hasReservationAtLibrary = finishedReservations.stream()
+                    .anyMatch(r -> r.getExemplary().getLibrary().getId().equals(libraryId));
+
+            System.out.println("Has reservation at library: " + hasReservationAtLibrary);
+
+            if (!hasReservationAtLibrary) {
+                throw new IllegalArgumentException("Nu ai nicio rezervare finalizată la această bibliotecă!");
+            }
+
+            review.setUser(foundUser);
+            review.setLibrary(foundLibrary);
+
+            updateRating(foundLibrary, review);
+            return reviewRepository.save(review);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-
-        review.setUser(foundUser);
-        review.setLibrary(foundLibrary);
-
-        updateRating(foundLibrary, review);
-        return reviewRepository.save(review);
     }
 
     public Page<Review> paginate(Pageable pageable) {
         return reviewRepository.findAll(pageable);
     }
 
-    public Page<Review> getAll(Pageable pageable) {
-        Review review = new Review();
-        Example<Review> exampleReview = Example.of(review);
-        return reviewRepository.findAll(exampleReview, pageable);
+    public Page<Review> getAll(Long libraryId, Pageable pageable) {
+        return reviewRepository.findByLibraryId(libraryId, pageable);
     }
 
     public void delete(Long reviewId, Long userId) {
@@ -71,11 +85,12 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
+    @Async
     private void updateRating(Library library, Review review) {
-        float ratingVechi = library.getMedieRating();
+        Float ratingVechi = library.getMedieRating();
+        if (ratingVechi == null) ratingVechi = 0f;
         int nrRatings = library.getReviews().size() + 1;
         float ratingNou = ratingVechi + review.getRating();
-
         library.setMedieRating(ratingNou / nrRatings);
     }
 }

@@ -34,17 +34,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
                                 .requestMatchers("/authentication/**").permitAll()
-                                //.requestMatchers(HttpMethod.POST, "/users").permitAll()
-                                //.requestMatchers(HttpMethod.POST, "/librarians").permitAll()
-                                //.requestMatchers(HttpMethod.POST, "/authors").permitAll()
-                                //.requestMatchers(HttpMethod.POST, "/publishers").permitAll()
-                                //.requestMatchers(HttpMethod.POST, "/books").permitAll()
-                                //.requestMatchers("/libraries/**").permitAll()
-                                //.requestMatchers("/users/**").permitAll()
-                                //.requestMatchers("/librarians/**").permitAll()
-                                //.requestMatchers("/authors/**").permitAll()
-                                //.requestMatchers("/publishers/**").permitAll()
-                                //.requestMatchers("/books/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/contact").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/books/all").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/libraries/all").permitAll()
                                 .requestMatchers(
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",

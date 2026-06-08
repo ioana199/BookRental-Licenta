@@ -21,7 +21,8 @@ public class Wishlist {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "wishlist", fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
     private Book book;
 
     public Long getId() {

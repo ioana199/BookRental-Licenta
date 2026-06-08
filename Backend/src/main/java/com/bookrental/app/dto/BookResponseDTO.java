@@ -11,8 +11,10 @@ public class BookResponseDTO {
     private String title;
     private String ISBN;
     private LocalDate publicationDate;
-    private Publisher publisher;
-    private Author author;
+    private String publisherName;
+    private String authorFirstName;
+    private String authorLastName;
+    private String imageUrl;
 
     public Long getId() {
         return id;
@@ -46,19 +48,35 @@ public class BookResponseDTO {
         this.publicationDate = publicationDate;
     }
 
-    public Publisher getPublisher() {
-        return publisher;
+    public String getPublisherName() {
+        return publisherName;
     }
 
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
     }
 
-    public Author getAuthor() {
-        return author;
+    public String getAuthorFirstName() {
+        return authorFirstName;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthorFirstName(String authorFirstName) {
+        this.authorFirstName = authorFirstName;
+    }
+
+    public String getAuthorLastName() {
+        return authorLastName;
+    }
+
+    public void setAuthorLastName(String authorLastName) {
+        this.authorLastName = authorLastName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
