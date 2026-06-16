@@ -1,9 +1,6 @@
 package com.bookrental.app.controller;
 
-import com.bookrental.app.dto.AuthorRequestDTO;
-import com.bookrental.app.dto.AuthorResponseDTO;
-import com.bookrental.app.dto.BookRequestDTO;
-import com.bookrental.app.dto.BookResponseDTO;
+import com.bookrental.app.dto.*;
 import com.bookrental.app.entities.Author;
 import com.bookrental.app.entities.Book;
 import com.bookrental.app.mapper.AuthorMapper;
@@ -105,5 +102,11 @@ public class BookController {
                 .toList();
 
         return ResponseEntity.status(200).body(bookResponseDTOS);
+    }
+
+    @GetMapping("/{bookId}/libraries")
+    public ResponseEntity<List<LibraryResponseDTO>> getLibrariesForBook(@PathVariable Long bookId) {
+        List<LibraryResponseDTO> libraries = bookService.getLibrariesForBook(bookId);
+        return ResponseEntity.status(200).body(libraries);
     }
 }

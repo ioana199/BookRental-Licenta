@@ -2,6 +2,7 @@ package com.bookrental.app.dto;
 
 import com.bookrental.app.entities.Author;
 import com.bookrental.app.entities.Publisher;
+import com.bookrental.app.enums.Genre;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -9,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class BookRequestDTO {
     private Long id;
@@ -18,6 +20,8 @@ public class BookRequestDTO {
     private String ISBN;
     private LocalDate publicationDate;
     private String imageUrl;
+    private List<Genre> genres;
+    private String summary;
 
     public Long getId() {
         return id;
@@ -57,5 +61,21 @@ public class BookRequestDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }

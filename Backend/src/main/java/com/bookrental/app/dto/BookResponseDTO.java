@@ -2,9 +2,11 @@ package com.bookrental.app.dto;
 
 import com.bookrental.app.entities.Author;
 import com.bookrental.app.entities.Publisher;
+import com.bookrental.app.enums.Genre;
 import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class BookResponseDTO {
     private Long id;
@@ -15,6 +17,8 @@ public class BookResponseDTO {
     private String authorFirstName;
     private String authorLastName;
     private String imageUrl;
+    private List<Genre> genres;
+    private String summary;
 
     public Long getId() {
         return id;
@@ -78,5 +82,21 @@ public class BookResponseDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }

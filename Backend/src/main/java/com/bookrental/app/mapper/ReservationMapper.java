@@ -22,7 +22,10 @@ public class ReservationMapper {
         reservationResponseDTO.setEndDate(reservation.getEndDate());
         reservationResponseDTO.setUserId(reservation.getUser().getId());
         reservationResponseDTO.setStatus(reservation.getStatus());
+        reservationResponseDTO.setExemplaryId(reservation.getExemplary().getId());
         reservationResponseDTO.setBookName(reservation.getExemplary().getBook().getTitle());
+        reservationResponseDTO.setUserFirstName(reservation.getUser().getFirstName());
+        reservationResponseDTO.setUserLastName(reservation.getUser().getLastName());
 
         return reservationResponseDTO;
     }

@@ -28,6 +28,10 @@ public class WishlistService {
 
     @Transactional
     public Wishlist create(Wishlist wishlist, Long bookId, Long userId) {
+        Wishlist existing = wishlistRepository.findByBookIdAndUserId(bookId, userId);
+        if (existing != null) {
+            throw new IllegalArgumentException("Cartea este deja la favorite!");
+        }
         Book foundBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
 
