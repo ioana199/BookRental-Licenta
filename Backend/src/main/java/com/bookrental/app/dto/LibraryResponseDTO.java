@@ -6,6 +6,7 @@ public class LibraryResponseDTO {
     private String city;
     private String phoneNumber;
     private String email;
+    private Float medieRating;
 
     public Long getId() {
         return id;
@@ -45,5 +46,13 @@ public class LibraryResponseDTO {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Float getMedieRating() {
+        return medieRating;
+    }
+
+    public void setMedieRating(Float medieRating) {
+        this.medieRating = medieRating;
     }
 }

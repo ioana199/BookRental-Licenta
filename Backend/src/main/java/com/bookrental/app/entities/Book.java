@@ -1,5 +1,6 @@
 package com.bookrental.app.entities;
 
+import com.bookrental.app.enums.Genre;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -33,6 +34,12 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
+    @ElementCollection(targetClass = Genre.class)
+    @CollectionTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "genre")
+    private List<Genre> genres;
+
     @JsonIgnore
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Exemplary> exemplaries;
@@ -47,25 +54,8 @@ public class Book {
     @Column(name = "image_url")
     private String imageUrl;
 
-    /*
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "book_tags", // Numele tabelului de legătură din baza de date
-            joinColumns = @JoinColumn(name = "book_id"), // Cheia străină către Book
-            inverseJoinColumns = @JoinColumn(name = "tag_id") // Cheia străină către Tag
-    )
-    private Set<Tag> tags = new HashSet<>();
-    si in tags am avea:
-    @ManyToMany(mappedBy = "tags")
-    private Set<Book> books = new HashSet<>();
-
-    si in responseDTO punem(ca altfel avem stackoverflow):
-    private Set<String> tagNames;
-    Set<String> names = book.getTags().stream()
-                        .map(Tag::getName)
-                        .collect(Collectors.toSet());
-    bookResponseDto.setTagNames(names);
-    */
+    @Column(name = "summary", columnDefinition = "TEXT")
+    private String summary;
 
     public Long getId() {
         return id;
@@ -115,6 +105,14 @@ public class Book {
         this.author = author;
     }
 
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
     public List<Exemplary> getExemplaries() {
         return exemplaries;
     }
@@ -145,5 +143,13 @@ public class Book {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }

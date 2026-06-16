@@ -1,6 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Table, Input, Button, Modal, Form, Space, Typography, Popconfirm, message } from 'antd';
-import { getAllPublishers, createPublisher, updatePublisher, deletePublisher } from '../../api/publisherApi';
+import { useEffect, useState } from "react";
+import {
+  Table,
+  Input,
+  Button,
+  Modal,
+  Form,
+  Space,
+  Typography,
+  Popconfirm,
+  message,
+} from "antd";
+import {
+  getAllPublishers,
+  createPublisher,
+  updatePublisher,
+  deletePublisher,
+} from "../../api/publisherApi";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -35,8 +50,8 @@ function PublishersPage() {
         (p) =>
           p.name?.toLowerCase().includes(val) ||
           p.email?.toLowerCase().includes(val) ||
-          p.city?.toLowerCase().includes(val)
-      )
+          p.city?.toLowerCase().includes(val),
+      ),
     );
   };
 
@@ -60,41 +75,52 @@ function PublishersPage() {
 
       action
         .then(() => {
-          message.success(editingPublisher ? 'Publisher actualizat!' : 'Publisher creat!');
+          message.success(
+            editingPublisher ? "Editură actualizată!" : "Editură creată!",
+          );
           setModalOpen(false);
           fetchPublishers();
         })
-        .catch(() => message.error('A apărut o eroare!'));
+        .catch(() => message.error("A apărut o eroare!"));
     });
   };
 
   const handleDelete = (id) => {
     deletePublisher(id)
       .then(() => {
-        message.success('Publisher șters!');
+        message.success("Publisher șters!");
         fetchPublishers();
       })
-      .catch(() => message.error('A apărut o eroare!'));
+      .catch(() => message.error("A apărut o eroare!"));
   };
 
   const columns = [
-    { title: 'Nume', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name?.localeCompare(b.name) },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Țară', dataIndex: 'country', key: 'country' },
-    { title: 'Oraș', dataIndex: 'city', key: 'city' },
     {
-      title: 'Acțiuni',
-      key: 'actions',
+      title: "Nume",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a, b) => a.name?.localeCompare(b.name),
+    },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Țară", dataIndex: "country", key: "country" },
+    { title: "Oraș", dataIndex: "city", key: "city" },
+    {
+      title: "Acțiuni",
+      key: "actions",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => openEditModal(record)}>Editează</Button>
+          <Button type="link" onClick={() => openEditModal(record)}>
+            Editează
+          </Button>
           <Popconfirm
             title="Ești sigur că vrei să ștergi?"
             onConfirm={() => handleDelete(record.id)}
             okText="Da"
             cancelText="Nu"
           >
-            <Button type="link" danger>Șterge</Button>
+            <Button type="link" danger>
+              Șterge
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -102,11 +128,13 @@ function PublishersPage() {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Space direction="vertical" style={{ width: '100%' }} size="large">
-        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={3}>Publisheri</Title>
-          <Button type="primary" onClick={openCreateModal}>+ Adaugă publisher</Button>
+    <div style={{ padding: "24px" }}>
+      <Space direction="vertical" style={{ width: "100%" }} size="large">
+        <Space style={{ justifyContent: "space-between", width: "100%" }}>
+          <Title level={3}>Edituri</Title>
+          <Button type="primary" onClick={openCreateModal}>
+            + Adaugă editură
+          </Button>
         </Space>
         <Search
           placeholder="Caută după nume, email sau oraș..."
@@ -125,7 +153,7 @@ function PublishersPage() {
       </Space>
 
       <Modal
-        title={editingPublisher ? 'Editează publisher' : 'Adaugă publisher'}
+        title={editingPublisher ? "Editează editură" : "Adaugă editură"}
         open={modalOpen}
         onOk={handleSubmit}
         onCancel={() => setModalOpen(false)}
@@ -133,10 +161,18 @@ function PublishersPage() {
         cancelText="Anulează"
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="name" label="Nume" rules={[{ required: true, message: 'Numele este obligatoriu' }]}>
+          <Form.Item
+            name="name"
+            label="Nume"
+            rules={[{ required: true, message: "Numele este obligatoriu" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Email-ul este obligatoriu' }]}>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: "Email-ul este obligatoriu" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item name="country" label="Țară">

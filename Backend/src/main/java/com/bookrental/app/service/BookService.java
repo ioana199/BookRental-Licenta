@@ -2,10 +2,12 @@ package com.bookrental.app.service;
 
 import com.bookrental.app.dto.BookRequestDTO;
 import com.bookrental.app.dto.BookResponseDTO;
+import com.bookrental.app.dto.LibraryResponseDTO;
 import com.bookrental.app.entities.Author;
 import com.bookrental.app.entities.Book;
 import com.bookrental.app.entities.Publisher;
 import com.bookrental.app.mapper.BookMapper;
+import com.bookrental.app.mapper.LibraryMapper;
 import com.bookrental.app.repository.AuthorRepository;
 import com.bookrental.app.repository.BookRepository;
 import com.bookrental.app.repository.PublisherRepository;
@@ -24,11 +26,13 @@ public class BookService {
     public final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
+    private final OpenAIService openAIService;
 
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, PublisherRepository publisherRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, PublisherRepository publisherRepository, OpenAIService openAIService) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.publisherRepository = publisherRepository;
+        this.openAIService = openAIService;
     }
 
     @Transactional
@@ -52,11 +56,32 @@ public class BookService {
             throw e;
         }    }
 
+    /*
     @Transactional
     public Book getById(Long bookId) {
         return bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
     }
+*/
+    @Transactional
+    public Book getById(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
 
+        // Generăm rezumatul dacă nu există
+        if (book.getSummary() == null || book.getSummary().isEmpty()) {
+            String summary = openAIService.generateSummary(
+                    book.getTitle(),
+                    book.getAuthor() != null ? book.getAuthor().getFirstName() : "",
+                    book.getAuthor() != null ? book.getAuthor().getLastName() : ""
+            );
+            if (summary != null) {
+                book.setSummary(summary);
+                bookRepository.save(book);
+            }
+        }
+
+        return book;
+    }
     public Book update(Long bookId, Book book, Long authorId, Long publisherId) {
         Book foundBook = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
 
@@ -64,6 +89,7 @@ public class BookService {
         foundBook.setISBN(book.getISBN());
         foundBook.setPublicationDate(book.getPublicationDate());
         foundBook.setImageUrl(book.getImageUrl());
+        foundBook.setGenres(book.getGenres());
 
         if (authorId != null) {
             Author foundAuthor = authorRepository.findById(authorId).orElseThrow(() -> new EntityNotFoundException("Author not found with id: " + authorId));
@@ -128,5 +154,15 @@ public class BookService {
             top10.add(booksSortedByContor.get(i));
         }
         return top10;
+    }
+
+    @Transactional
+    public List<LibraryResponseDTO> getLibrariesForBook(Long bookId) {
+        Book book = getById(bookId);
+        return book.getExemplaries().stream()
+                .map(e -> e.getLibrary())
+                .distinct()
+                .map(LibraryMapper::mapLibrary2LibraryResponseDTO)
+                .toList();
     }
 }

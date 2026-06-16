@@ -1,7 +1,23 @@
-import { useEffect, useState } from 'react';
-import { Table, Input, Button, Modal, Form, Space, Typography, Popconfirm, message, Select } from 'antd';
-import { getAllLibrarians, createLibrarian, updateLibrarian, deleteLibrarian } from '../../api/librarianApi';
-import { getAllLibraries } from '../../api/libraryApi';
+import { useEffect, useState } from "react";
+import {
+  Table,
+  Input,
+  Button,
+  Modal,
+  Form,
+  Space,
+  Typography,
+  Popconfirm,
+  message,
+  Select,
+} from "antd";
+import {
+  getAllLibrarians,
+  createLibrarian,
+  updateLibrarian,
+  deleteLibrarian,
+} from "../../api/librarianApi";
+import { getAllLibraries } from "../../api/libraryApi";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -38,8 +54,8 @@ function LibrariansManagementPage() {
         (l) =>
           l.firstName?.toLowerCase().includes(val) ||
           l.lastName?.toLowerCase().includes(val) ||
-          l.email?.toLowerCase().includes(val)
-      )
+          l.email?.toLowerCase().includes(val),
+      ),
     );
   };
 
@@ -78,46 +94,53 @@ function LibrariansManagementPage() {
 
       action
         .then(() => {
-          message.success(editingLibrarian ? 'Librarian actualizat!' : 'Librarian creat!');
+          message.success(
+            editingLibrarian ? "Bibliotecar actualizat!" : "Bibliotecar creat!",
+          );
           setModalOpen(false);
           fetchLibrarians();
         })
-        .catch(() => message.error('A apărut o eroare!'));
+        .catch(() => message.error("A apărut o eroare!"));
     });
   };
 
   const handleDelete = (id) => {
     deleteLibrarian(id)
       .then(() => {
-        message.success('Librarian șters!');
+        message.success("Bibliotecar șters!");
         fetchLibrarians();
       })
-      .catch(() => message.error('A apărut o eroare!'));
+      .catch(() => message.error("A apărut o eroare!"));
   };
 
   const columns = [
-    { title: 'Prenume', dataIndex: 'firstName', key: 'firstName' },
-    { title: 'Nume', dataIndex: 'lastName', key: 'lastName' },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { title: "Prenume", dataIndex: "firstName", key: "firstName" },
+    { title: "Nume", dataIndex: "lastName", key: "lastName" },
+    { title: "Email", dataIndex: "email", key: "email" },
     {
-      title: 'Bibliotecă',
-      dataIndex: 'libraryId',
-      key: 'libraryId',
-      render: (libraryId) => libraries.find((l) => l.id === libraryId)?.name || libraryId,
+      title: "Bibliotecă",
+      dataIndex: "libraryId",
+      key: "libraryId",
+      render: (libraryId) =>
+        libraries.find((l) => l.id === libraryId)?.name || libraryId,
     },
     {
-      title: 'Acțiuni',
-      key: 'actions',
+      title: "Acțiuni",
+      key: "actions",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => openEditModal(record)}>Editează</Button>
+          <Button type="link" onClick={() => openEditModal(record)}>
+            Editează
+          </Button>
           <Popconfirm
             title="Ești sigur că vrei să ștergi?"
             onConfirm={() => handleDelete(record.id)}
             okText="Da"
             cancelText="Nu"
           >
-            <Button type="link" danger>Șterge</Button>
+            <Button type="link" danger>
+              Șterge
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -125,11 +148,13 @@ function LibrariansManagementPage() {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Space direction="vertical" style={{ width: '100%' }} size="large">
-        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={3}>Gestionare librarians</Title>
-          <Button type="primary" onClick={openCreateModal}>+ Adaugă librarian</Button>
+    <div style={{ padding: "24px" }}>
+      <Space direction="vertical" style={{ width: "100%" }} size="large">
+        <Space style={{ justifyContent: "space-between", width: "100%" }}>
+          <Title level={3}>Gestionare bibliotecari</Title>
+          <Button type="primary" onClick={openCreateModal}>
+            + Adaugă bibliotecar
+          </Button>
         </Space>
         <Search
           placeholder="Caută după nume sau email..."
@@ -148,7 +173,7 @@ function LibrariansManagementPage() {
       </Space>
 
       <Modal
-        title={editingLibrarian ? 'Editează librarian' : 'Adaugă librarian'}
+        title={editingLibrarian ? "Editează bibliotecar" : "Adaugă bibliotecar"}
         open={modalOpen}
         onOk={handleSubmit}
         onCancel={() => setModalOpen(false)}
@@ -162,18 +187,33 @@ function LibrariansManagementPage() {
           <Form.Item name="lastName" label="Nume">
             <Input />
           </Form.Item>
-          <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Email-ul este obligatoriu' }]}>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: "Email-ul este obligatoriu" }]}
+          >
             <Input />
           </Form.Item>
           {!editingLibrarian && (
-            <Form.Item name="password" label="Parolă" rules={[{ required: true, message: 'Parola este obligatorie' }]}>
+            <Form.Item
+              name="password"
+              label="Parolă"
+              rules={[{ required: true, message: "Parola este obligatorie" }]}
+            >
               <Input.Password />
             </Form.Item>
           )}
-          <Form.Item name="libraryId" label="Bibliotecă" rules={[{ required: true, message: 'Selectează o bibliotecă' }]}>
+          <Form.Item
+            name="libraryId"
+            label="Bibliotecă"
+            rules={[{ required: true, message: "Selectează o bibliotecă" }]}
+          >
             <Select
               placeholder="Selectează biblioteca"
-              options={libraries.map((l) => ({ value: l.id, label: `${l.name} - ${l.city}` }))}
+              options={libraries.map((l) => ({
+                value: l.id,
+                label: `${l.name} - ${l.city}`,
+              }))}
             />
           </Form.Item>
         </Form>

@@ -1,6 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Table, Input, Button, Modal, Form, Space, Typography, Popconfirm, message } from 'antd';
-import { getAllUsers, createUser, updateUser, deleteUser } from '../../api/userApi';
+import { useEffect, useState } from "react";
+import {
+  Table,
+  Input,
+  Button,
+  Modal,
+  Form,
+  Space,
+  Typography,
+  Popconfirm,
+  message,
+} from "antd";
+import {
+  getAllUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "../../api/userApi";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -24,7 +39,9 @@ function UsersManagementPage() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleSearch = (value) => {
     const val = value.toLowerCase();
@@ -33,8 +50,8 @@ function UsersManagementPage() {
         (u) =>
           u.firstName?.toLowerCase().includes(val) ||
           u.lastName?.toLowerCase().includes(val) ||
-          u.email?.toLowerCase().includes(val)
-      )
+          u.email?.toLowerCase().includes(val),
+      ),
     );
   };
 
@@ -60,28 +77,30 @@ function UsersManagementPage() {
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      const payload = editingUser ? {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        address: {
-          country: values.country,
-          city: values.city,
-          street: values.street,
-          number: values.number,
-        },
-      } : {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-        address: {
-          country: values.country,
-          city: values.city,
-          street: values.street,
-          number: values.number,
-        },
-      };
+      const payload = editingUser
+        ? {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            address: {
+              country: values.country,
+              city: values.city,
+              street: values.street,
+              number: values.number,
+            },
+          }
+        : {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            password: values.password,
+            address: {
+              country: values.country,
+              city: values.city,
+              street: values.street,
+              number: values.number,
+            },
+          };
 
       const action = editingUser
         ? updateUser(editingUser.id, payload)
@@ -89,41 +108,47 @@ function UsersManagementPage() {
 
       action
         .then(() => {
-          message.success(editingUser ? 'User actualizat!' : 'User creat!');
+          message.success(
+            editingUser ? "Utilizator actualizat!" : "Utilizator creat!",
+          );
           setModalOpen(false);
           fetchUsers();
         })
-        .catch(() => message.error('A apărut o eroare!'));
+        .catch(() => message.error("A apărut o eroare!"));
     });
   };
 
   const handleDelete = (id) => {
     deleteUser(id)
       .then(() => {
-        message.success('User șters!');
+        message.success("Utilizator șters!");
         fetchUsers();
       })
-      .catch(() => message.error('A apărut o eroare!'));
+      .catch(() => message.error("A apărut o eroare!"));
   };
 
   const columns = [
-    { title: 'Prenume', dataIndex: 'firstName', key: 'firstName' },
-    { title: 'Nume', dataIndex: 'lastName', key: 'lastName' },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Oraș', dataIndex: ['address', 'city'], key: 'city' },
+    { title: "Prenume", dataIndex: "firstName", key: "firstName" },
+    { title: "Nume", dataIndex: "lastName", key: "lastName" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Oraș", dataIndex: ["address", "city"], key: "city" },
     {
-      title: 'Acțiuni',
-      key: 'actions',
+      title: "Acțiuni",
+      key: "actions",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => openEditModal(record)}>Editează</Button>
+          <Button type="link" onClick={() => openEditModal(record)}>
+            Editează
+          </Button>
           <Popconfirm
             title="Ești sigur că vrei să ștergi?"
             onConfirm={() => handleDelete(record.id)}
             okText="Da"
             cancelText="Nu"
           >
-            <Button type="link" danger>Șterge</Button>
+            <Button type="link" danger>
+              Șterge
+            </Button>
           </Popconfirm>
         </Space>
       ),
@@ -131,11 +156,13 @@ function UsersManagementPage() {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Space direction="vertical" style={{ width: '100%' }} size="large">
-        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
-          <Title level={3}>Gestionare useri</Title>
-          <Button type="primary" onClick={openCreateModal}>+ Adaugă user</Button>
+    <div style={{ padding: "24px" }}>
+      <Space direction="vertical" style={{ width: "100%" }} size="large">
+        <Space style={{ justifyContent: "space-between", width: "100%" }}>
+          <Title level={3}>Gestionare utilizatori</Title>
+          <Button type="primary" onClick={openCreateModal}>
+            + Adaugă utilizator
+          </Button>
         </Space>
         <Search
           placeholder="Caută după nume sau email..."
@@ -154,7 +181,7 @@ function UsersManagementPage() {
       </Space>
 
       <Modal
-        title={editingUser ? 'Editează user' : 'Adaugă user'}
+        title={editingUser ? "Editează utilizator" : "Adaugă utilizator"}
         open={modalOpen}
         onOk={handleSubmit}
         onCancel={() => setModalOpen(false)}
@@ -168,11 +195,19 @@ function UsersManagementPage() {
           <Form.Item name="lastName" label="Nume">
             <Input />
           </Form.Item>
-          <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Email-ul este obligatoriu' }]}>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: "Email-ul este obligatoriu" }]}
+          >
             <Input />
           </Form.Item>
           {!editingUser && (
-            <Form.Item name="password" label="Parolă" rules={[{ required: true, message: 'Parola este obligatorie' }]}>
+            <Form.Item
+              name="password"
+              label="Parolă"
+              rules={[{ required: true, message: "Parola este obligatorie" }]}
+            >
               <Input.Password />
             </Form.Item>
           )}

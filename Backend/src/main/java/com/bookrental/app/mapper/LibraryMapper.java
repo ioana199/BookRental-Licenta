@@ -24,6 +24,7 @@ public class LibraryMapper {
         libraryResponseDTO.setCity(library.getCity());
         libraryResponseDTO.setPhoneNumber(library.getPhoneNumber());
         libraryResponseDTO.setEmail(library.getEmail());
+        libraryResponseDTO.setMedieRating(library.getMedieRating());
 
         return libraryResponseDTO;
     }
