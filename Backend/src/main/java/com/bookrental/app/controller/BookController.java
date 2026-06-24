@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class BookController {
     }
 
     @PostMapping("/{authorId}/{publisherId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<BookResponseDTO> create(@PathVariable Long authorId, @PathVariable Long publisherId, @Valid @RequestBody BookRequestDTO bookRequestDTO) {
         Book bookToCreate = BookMapper.mapBookRequestDTO2Book(bookRequestDTO);
         Book createdBook = bookService.create(authorId, publisherId, bookToCreate);
@@ -36,6 +38,7 @@ public class BookController {
     }
 
     @PutMapping("/{bookId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<BookResponseDTO> update(@PathVariable Long bookId, @RequestBody BookRequestDTO bookRequestDTO, @RequestParam(required = false) Long authorId, @RequestParam(required = false) Long publisherId) {
         Book bookToUpdate = BookMapper.mapBookRequestDTO2Book(bookRequestDTO);
         Book updatedBook = bookService.update(bookId, bookToUpdate, authorId, publisherId);
@@ -89,6 +92,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{bookId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<?> delete(@PathVariable Long bookId) {
         bookService.delete(bookId);
         return ResponseEntity.noContent().build();

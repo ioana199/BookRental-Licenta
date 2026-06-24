@@ -1,0 +1,126 @@
+/* ===========================================================
+   Biblioteci — user/LibrariesPage
+   Necesită variabilele din styles/theme.css
+   =========================================================== */
+
+.lib-loading {
+  text-align: center;
+  padding: 80px;
+}
+
+.lib-head {
+  margin-bottom: 26px;
+}
+
+/* Search rotunjit, în temă */
+.lib-search {
+  max-width: 440px;
+  width: 100%;
+  margin-bottom: 36px;
+}
+.lib-search .ant-input-affix-wrapper,
+.lib-search .ant-input {
+  border-radius: 40px;
+}
+.lib-search .ant-input-search-button {
+  border-radius: 0 40px 40px 0 !important;
+}
+
+/* Grid fluid */
+.lib-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+@media (max-width: 560px) {
+  .lib-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.lib-card {
+  background: var(--br-surface);
+  border: 1px solid var(--br-line);
+  border-radius: 16px;
+  padding: 24px 26px 22px;
+  cursor: pointer;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+  box-shadow: var(--br-shadow);
+  display: flex;
+  flex-direction: column;
+}
+.lib-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--br-shadow-lg);
+  border-color: var(--br-accent-soft);
+}
+
+.lib-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lib-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--br-accent-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lib-card__city-tag {
+  font-family: var(--br-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--br-primary-strong);
+  background: var(--br-bg);
+  border: 1px solid var(--br-line);
+  padding: 5px 11px;
+  border-radius: 20px;
+}
+
+.lib-card__name {
+  font-family: var(--br-font-serif);
+  font-size: 23px;
+  letter-spacing: -0.01em;
+  color: var(--br-ink);
+  margin-top: 18px;
+}
+
+.lib-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.lib-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--br-ink-soft);
+}
+.lib-meta-row svg {
+  color: var(--br-muted);
+  flex: none;
+}
+.lib-meta-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lib-card__cta {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--br-line);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--br-primary-strong);
+}

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class PublisherController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<PublisherResponseDTO> create(@Valid @RequestBody PublisherRequestDTO publisherRequestDTO) {
         Publisher publisherToCreate = PublisherMapper.mapPublisherRequestDTO2Publisher(publisherRequestDTO);
         Publisher createdPublisher = publisherService.create(publisherToCreate);
@@ -37,6 +39,7 @@ public class PublisherController {
     }
 
     @PutMapping("/{publisherId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<PublisherResponseDTO> update(@PathVariable Long publisherId,
                                                        @RequestBody PublisherRequestDTO publisherRequestDTO) {
 
@@ -90,6 +93,7 @@ public class PublisherController {
     }
 
     @DeleteMapping("/{publisherId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<?> delete(@PathVariable Long publisherId) {
         publisherService.delete(publisherId);
         return ResponseEntity.noContent().build();

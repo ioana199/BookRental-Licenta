@@ -28,7 +28,10 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final EmailService emailService;
 
-    public ReservationService(ReservationRepository reservationRepository, ExemplaryRepository exemplaryRepository, UserRepository userRepository, EmailService emailService) {
+    public ReservationService(ReservationRepository reservationRepository,
+                              ExemplaryRepository exemplaryRepository,
+                              UserRepository userRepository,
+                              EmailService emailService) {
         this.reservationRepository = reservationRepository;
         this.exemplaryRepository = exemplaryRepository;
         this.userRepository = userRepository;
@@ -120,30 +123,6 @@ public class ReservationService {
         throw new NotFoundException("Rezervarea nu a putut fi creata");
     }
     */
-
-    /*@Transactional
-    public Reservation create(Long bookId, Long libraryId, LocalDate startDate, LocalDate endDate, Long userId) {
-
-        List<Exemplary> exemplars = exemplaryRepository.findAvailableExemplar(bookId, libraryId, startDate, endDate);
-        if (exemplars.isEmpty()) {
-            throw new NotFoundException("No books available, try again later.");//sau return null
-        }
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-
-        Reservation reservation = new Reservation();
-        reservation.setExemplary(exemplars.getFirst());
-        reservation.setStartDate(startDate);
-        reservation.setEndDate(endDate);
-        reservation.setUser(user);
-        reservation.setStatus(StatusReservation.PENDING);
-
-
-        reserveMail(user.getEmail());
-        updateContor(reservation);
-        return reservationRepository.save(reservation);
-    }*/
 
     @Transactional
     public Reservation create(Long bookId, Long libraryId, LocalDate startDate, LocalDate endDate, Long userId) {

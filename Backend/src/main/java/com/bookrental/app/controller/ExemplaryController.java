@@ -9,6 +9,7 @@ import com.bookrental.app.mapper.BookMapper;
 import com.bookrental.app.service.ExemplaryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/exemplaries")
+@PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
 public class ExemplaryController {
     private final ExemplaryService exemplaryService;
 

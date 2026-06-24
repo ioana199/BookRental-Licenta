@@ -1,3 +1,4 @@
+/*
 import { useEffect, useState } from 'react';
 import { Table, Input, Button, Modal, Form, Space, Typography, Popconfirm, message } from 'antd';
 import { getAllLibraries, createLibrary, updateLibrary, deleteLibrary } from '../../api/libraryApi';
@@ -146,6 +147,222 @@ function LibrariesManagementPage() {
             <Input />
           </Form.Item>
           <Form.Item name="phoneNumber" label="Telefon" rules={[{ required: true, message: 'Telefonul este obligatoriu' }]}>
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
+  );
+}
+
+export default LibrariesManagementPage;
+*/
+
+import { useEffect, useState } from "react";
+import { Table, Input, Button, Modal, Form, Popconfirm, message } from "antd";
+import {
+  getAllLibraries,
+  createLibrary,
+  updateLibrary,
+  deleteLibrary,
+} from "../../api/libraryApi";
+import "../../styles/management.css";
+
+const { Search } = Input;
+
+function LibrariesManagementPage() {
+  const [libraries, setLibraries] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingLibrary, setEditingLibrary] = useState(null);
+  const [form] = Form.useForm();
+
+  const fetchLibraries = () => {
+    setLoading(true);
+    getAllLibraries()
+      .then((res) => {
+        setLibraries(res.data);
+        setFiltered(res.data);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchLibraries();
+  }, []);
+
+  const handleSearch = (value) => {
+    const val = value.toLowerCase();
+    setFiltered(
+      libraries.filter(
+        (l) =>
+          l.name?.toLowerCase().includes(val) ||
+          l.city?.toLowerCase().includes(val) ||
+          l.email?.toLowerCase().includes(val),
+      ),
+    );
+  };
+
+  const openCreateModal = () => {
+    setEditingLibrary(null);
+    form.resetFields();
+    setModalOpen(true);
+  };
+
+  const openEditModal = (library) => {
+    setEditingLibrary(library);
+    form.setFieldsValue({
+      name: library.name,
+      city: library.city,
+      email: library.email,
+      phoneNumber: library.phoneNumber,
+    });
+    setModalOpen(true);
+  };
+
+  const handleSubmit = () => {
+    form.validateFields().then((values) => {
+      const action = editingLibrary
+        ? updateLibrary(editingLibrary.id, values)
+        : createLibrary(values);
+
+      action
+        .then(() => {
+          message.success(
+            editingLibrary ? "Bibliotecă actualizată!" : "Bibliotecă creată!",
+          );
+          setModalOpen(false);
+          fetchLibraries();
+        })
+        .catch(() => message.error("A apărut o eroare!"));
+    });
+  };
+
+  const handleDelete = (id) => {
+    deleteLibrary(id)
+      .then(() => {
+        message.success("Bibliotecă ștearsă!");
+        fetchLibraries();
+      })
+      .catch(() => message.error("A apărut o eroare!"));
+  };
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: 70,
+      render: (id) => <span className="mgmt-mono">{id}</span>,
+    },
+    {
+      title: "Nume",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a, b) => a.name?.localeCompare(b.name),
+    },
+    { title: "Oraș", dataIndex: "city", key: "city" },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      render: (email) => <span className="mgmt-email">{email}</span>,
+    },
+    {
+      title: "Telefon",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      render: (v) => <span className="mgmt-mono">{v}</span>,
+    },
+    {
+      title: "Acțiuni",
+      key: "actions",
+      render: (_, record) => (
+        <div className="mgmt-actions">
+          <Button
+            type="link"
+            className="mgmt-edit"
+            onClick={() => openEditModal(record)}
+          >
+            Editează
+          </Button>
+          <Popconfirm
+            title="Ești sigur că vrei să ștergi?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Da"
+            cancelText="Nu"
+          >
+            <Button type="link" danger>
+              Șterge
+            </Button>
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="mgmt-page">
+      <div className="mgmt-head">
+        <h1 className="mgmt-title">Gestionare biblioteci</h1>
+        <Button type="primary" className="mgmt-add" onClick={openCreateModal}>
+          + Adaugă bibliotecă
+        </Button>
+      </div>
+      <Search
+        placeholder="Caută după nume, oraș sau email..."
+        onSearch={handleSearch}
+        onChange={(e) => handleSearch(e.target.value)}
+        className="mgmt-search"
+        allowClear
+      />
+      <div className="mgmt-card">
+        <Table
+          dataSource={filtered}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+          pagination={{ pageSize: 10 }}
+        />
+      </div>
+
+      <Modal
+        title={editingLibrary ? "Editează bibliotecă" : "Adaugă bibliotecă"}
+        open={modalOpen}
+        onOk={handleSubmit}
+        onCancel={() => setModalOpen(false)}
+        okText="Salvează"
+        cancelText="Anulează"
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Nume"
+            rules={[{ required: true, message: "Numele este obligatoriu" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="city"
+            label="Oraș"
+            rules={[{ required: true, message: "Orașul este obligatoriu" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: "Email-ul este obligatoriu" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="phoneNumber"
+            label="Telefon"
+            rules={[{ required: true, message: "Telefonul este obligatoriu" }]}
+          >
             <Input />
           </Form.Item>
         </Form>

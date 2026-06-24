@@ -1,0 +1,158 @@
+/* ===========================================================
+   Register (signup) — pages/registerPage
+   Necesită variabilele din styles/theme.css
+   =========================================================== */
+
+.reg {
+  min-height: 100vh;
+  display: flex;
+  background: var(--br-bg);
+}
+.reg *,
+.reg *::before,
+.reg *::after {
+  box-sizing: border-box;
+}
+
+/* ---- Panou brand (stânga) ---- */
+.reg-brand {
+  flex: none;
+  width: 42%;
+  max-width: 560px;
+  background: linear-gradient(135deg, #3d2314 0%, #5c3d2e 100%);
+  color: var(--br-bg);
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.reg-brand__top {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.reg-brand__logo {
+  font-family: var(--br-font-serif);
+  font-size: 30px;
+  font-weight: 600;
+}
+.reg-brand__tag {
+  font-family: var(--br-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  color: var(--br-accent-soft);
+  margin-top: 6px;
+}
+.reg-brand__headline {
+  font-family: var(--br-font-serif);
+  font-size: 42px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-weight: 500;
+}
+.reg-brand__headline em {
+  color: var(--br-accent-soft);
+  font-style: italic;
+}
+.reg-brand__lead {
+  font-size: 16px;
+  color: #c9b6a2;
+  margin-top: 20px;
+  line-height: 1.6;
+  max-width: 380px;
+}
+.reg-brand__copy {
+  font-family: var(--br-font-mono);
+  font-size: 11px;
+  color: #7e6b59;
+}
+
+/* ---- Formular (dreapta) ---- */
+.reg-main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+  padding: 56px 40px;
+}
+.reg-formwrap {
+  width: 100%;
+  max-width: 440px;
+}
+.reg-title {
+  font-family: var(--br-font-serif);
+  font-size: 34px;
+  letter-spacing: -0.01em;
+  color: var(--br-ink);
+  margin: 0;
+}
+.reg-subtitle {
+  font-size: 14.5px;
+  color: var(--br-ink-soft);
+  margin-top: 6px;
+}
+.reg-link {
+  color: var(--br-primary-strong);
+  cursor: pointer;
+  font-weight: 600;
+}
+.reg-link:hover {
+  text-decoration: underline;
+}
+
+.reg-form {
+  margin-top: 26px;
+}
+.reg-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 18px;
+}
+
+.reg-submit.ant-btn {
+  background: var(--br-primary);
+  border: none;
+  border-radius: 11px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 8px;
+}
+.reg-submit.ant-btn:hover {
+  background: var(--br-primary-strong) !important;
+}
+.reg-back.ant-btn {
+  border-radius: 11px;
+  height: 46px;
+  margin-top: 12px;
+  border-color: var(--br-line-strong);
+  color: var(--br-ink-soft);
+}
+
+/* ===========================================================
+   RESPONSIVE
+   =========================================================== */
+@media (max-width: 860px) {
+  .reg {
+    flex-direction: column;
+  }
+  .reg-brand {
+    width: 100%;
+    max-width: none;
+    padding: 36px 28px;
+    gap: 20px;
+  }
+  .reg-brand__headline {
+    font-size: 32px;
+  }
+  .reg-main {
+    padding: 36px 24px;
+  }
+}
+@media (max-width: 480px) {
+  .reg-row {
+    grid-template-columns: 1fr;
+  }
+}

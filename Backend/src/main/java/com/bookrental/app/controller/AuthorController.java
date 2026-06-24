@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class AuthorController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<AuthorResponseDTO> create(@Valid @RequestBody AuthorRequestDTO authorRequestDTO) {
         Author authorToCreate = AuthorMapper.mapAuthorRequestDTO2Author(authorRequestDTO);
         Author createdAuthor = authorService.create(authorToCreate);
@@ -33,6 +35,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{authorId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<AuthorResponseDTO> update(@PathVariable Long authorId,
                                                     @RequestBody AuthorRequestDTO authorRequestDTO) {
 
@@ -86,6 +89,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{authorId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<?> delete(@PathVariable Long authorId) {
         authorService.delete(authorId);
         return ResponseEntity.noContent().build();

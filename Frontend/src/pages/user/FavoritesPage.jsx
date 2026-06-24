@@ -1,3 +1,4 @@
+/*
 import { useEffect, useState } from 'react';
 import { Row, Col, Typography, Empty, Spin, Button, message } from 'antd';
 import { getMyWishlists, removeFromWishlist } from '../../api/wishlistApi';
@@ -105,6 +106,118 @@ function FavoritesPage() {
             </Col>
           ))}
         </Row>
+      )}
+    </div>
+  );
+}
+
+export default FavoritesPage;
+*/
+
+import { useEffect, useState } from "react";
+import { Empty, Spin, Button, message } from "antd";
+import { useNavigate } from "react-router-dom";
+import { getMyWishlists, removeFromWishlist } from "../../api/wishlistApi";
+import { HeartFilled } from "@ant-design/icons";
+import "./FavoritesPage.css";
+
+function FavoritesPage() {
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const fetchFavorites = () => {
+    setLoading(true);
+    getMyWishlists({})
+      .then((res) => setFavorites(res.data.content || []))
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  const handleRemove = (bookId) => {
+    removeFromWishlist(bookId)
+      .then(() => {
+        message.success("Carte eliminată din favorite!");
+        fetchFavorites();
+      })
+      .catch(() => message.error("A apărut o eroare!"));
+  };
+
+  if (loading)
+    return (
+      <div className="fav-loading">
+        <Spin size="large" />
+      </div>
+    );
+
+  return (
+    <div className="fav-page br-page">
+      <div className="fav-head">
+        <div className="br-eyebrow">Lista ta de citit</div>
+        <h1 className="br-title">Favorite</h1>
+      </div>
+
+      {favorites.length === 0 ? (
+        <div className="fav-empty">
+          <Empty description="Nu ai cărți favorite încă" />
+          <Button
+            type="primary"
+            className="btn-reserve fav-empty__cta"
+            onClick={() => navigate("/user/books")}
+          >
+            Răsfoiește catalogul
+          </Button>
+        </div>
+      ) : (
+        <div className="fav-grid">
+          {favorites.map((wishlist) => (
+            <div className="fav-card" key={wishlist.id}>
+              <div
+                className="fav-card__cover-wrap"
+                onClick={() => navigate(`/user/books/${wishlist.bookId}`)}
+              >
+                <div className="fav-cover">
+                  {wishlist.imageUrl ? (
+                    <img src={wishlist.imageUrl} alt={wishlist.bookName} />
+                  ) : (
+                    <div className="fav-cover__fallback">
+                      <span>📚</span>
+                      <strong>{wishlist.bookName}</strong>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div
+                className="fav-card__title"
+                onClick={() => navigate(`/user/books/${wishlist.bookId}`)}
+              >
+                {wishlist.bookName}
+              </div>
+
+              <div className="fav-card__buttons">
+                <Button
+                  type="primary"
+                  className="btn-reserve"
+                  onClick={() => navigate(`/user/books/${wishlist.bookId}`)}
+                >
+                  Rezervă
+                </Button>
+                <Button
+                  className="btn-fav btn-fav--active"
+                  onClick={() => handleRemove(wishlist.bookId)}
+                  title="Elimină din favorite"
+                >
+                  <HeartFilled />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

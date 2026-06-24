@@ -1,3 +1,4 @@
+/*
 import { Layout, Menu } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
@@ -66,6 +67,67 @@ function UserLayout({ children }) {
           onClick={() => keycloak.logout()}
           style={{ color: "#F5C6A0", cursor: "pointer", marginLeft: "24px" }}
         >
+          Deconectare
+        </div>
+      </Header>
+      <Content style={{ padding: "24px", marginTop: "16px" }}>
+        {children}
+      </Content>
+    </Layout>
+  );
+}
+
+export default UserLayout;
+*/
+import { Layout } from "antd";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useKeycloak } from "@react-keycloak/web";
+import "./UserLayout.css";
+
+const { Header, Content } = Layout;
+
+function UserLayout({ children }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { keycloak } = useKeycloak();
+
+  const menuItems = [
+    { key: "/home", label: "Acasă" },
+    { key: "/user/libraries", label: "Biblioteci" },
+    { key: "/user/books", label: "Cărți" },
+    { key: "/user/favorites", label: "Favorite" },
+    { key: "/user/reservations", label: "Rezervările mele" },
+    { key: "/user/profile", label: "Profilul meu" },
+  ];
+
+  const isActive = (key) =>
+    location.pathname === key || location.pathname.startsWith(key + "/");
+
+  return (
+    <Layout style={{ minHeight: "100vh", overflow: "visible" }}>
+      <Header className="user-header">
+        {/* Logo nou — wordmark */}
+        <div className="user-header__brand" onClick={() => navigate("/home")}>
+          <span className="user-header__logo">BookRental</span>
+          <span className="user-header__tag">RENT A BOOK, TAKE A LOOK</span>
+        </div>
+
+        {/* Navigație cu tab-uri pe toată înălțimea */}
+        <nav className="user-nav">
+          {menuItems.map((item) => (
+            <div
+              key={item.key}
+              className={`user-nav__item ${
+                isActive(item.key) ? "is-active" : ""
+              }`}
+              onClick={() => navigate(item.key)}
+            >
+              {item.label}
+            </div>
+          ))}
+        </nav>
+
+        <div className="user-header__logout" onClick={() => keycloak.logout()}>
           Deconectare
         </div>
       </Header>

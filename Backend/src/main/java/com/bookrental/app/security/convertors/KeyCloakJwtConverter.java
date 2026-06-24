@@ -41,7 +41,6 @@ public class KeyCloakJwtConverter implements Converter<Jwt, Collection<GrantedAu
         }
 
         Map<String, Map<String, Collection<String>>> resourceAccess = jwt.getClaim(CLAIM_RESOURCE_ACCESS);
-
         if (resourceAccess != null && !resourceAccess.isEmpty()) {
             resourceAccess.forEach((resource, resourceClaims) -> resourceClaims.get(CLAIM_ROLES).forEach(
                     role -> grantedAuthorities.add(new SimpleGrantedAuthority(PREFIX_RESOURCE_ROLE + role))

@@ -1,0 +1,226 @@
+/* ===========================================================
+   Detaliu bibliotecă — user/LibraryDetailPage
+   Necesită variabilele din styles/theme.css
+   =========================================================== */
+
+.libd-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+  box-sizing: border-box;
+}
+.libd-page *,
+.libd-page *::before,
+.libd-page *::after {
+  box-sizing: border-box;
+}
+
+.libd-loading {
+  text-align: center;
+  padding: 80px;
+}
+.libd-missing {
+  padding: 80px;
+  text-align: center;
+  color: var(--br-ink-soft);
+}
+
+/* Back */
+.libd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid var(--br-line-strong);
+  border-radius: 40px;
+  background: var(--br-surface);
+  font-size: 13.5px;
+  color: var(--br-ink-soft);
+  cursor: pointer;
+  font-family: var(--br-font-sans);
+  margin-bottom: 24px;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.libd-back:hover {
+  border-color: var(--br-primary);
+  color: var(--br-primary-strong);
+}
+
+/* Hero bibliotecă */
+.libd-hero {
+  background: var(--br-surface);
+  border: 1px solid var(--br-line);
+  border-radius: 16px;
+  padding: 40px 32px 34px;
+  box-shadow: var(--br-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.libd-hero__icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  background: var(--br-accent-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.libd-hero__name {
+  font-family: var(--br-font-serif);
+  font-size: 38px;
+  letter-spacing: -0.02em;
+  color: var(--br-ink);
+  margin: 18px 0 0;
+}
+.libd-hero__rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.libd-hero__rating-num {
+  font-size: 14px;
+  color: var(--br-ink-soft);
+}
+
+.libd-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 28px;
+  margin-top: 20px;
+}
+.libd-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14.5px;
+  color: var(--br-ink-soft);
+}
+.libd-meta-row svg {
+  color: var(--br-primary-strong);
+  flex: none;
+}
+
+/* Card formular */
+.libd-card {
+  background: var(--br-surface);
+  border: 1px solid var(--br-line);
+  border-radius: 16px;
+  padding: 30px 32px;
+  box-shadow: var(--br-shadow);
+  margin-top: 28px;
+}
+.libd-h2 {
+  font-family: var(--br-font-serif);
+  font-size: 24px;
+  color: var(--br-ink);
+  margin: 0 0 18px;
+}
+.libd-h2--section {
+  margin-top: 40px;
+}
+.libd-count {
+  color: var(--br-muted);
+  font-family: var(--br-font-sans);
+  font-size: 18px;
+}
+
+.libd-form .ant-btn.btn-primary {
+  background: var(--br-primary);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  height: 42px;
+  padding: 0 26px;
+}
+.libd-form .ant-btn.btn-primary:hover {
+  background: var(--br-primary-strong) !important;
+}
+
+/* Recenzii */
+.libd-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.review-card {
+  display: flex;
+  gap: 16px;
+  background: var(--br-surface);
+  border: 1px solid var(--br-line);
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: var(--br-shadow);
+}
+.review-card__avatar {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--br-primary), var(--br-accent-soft));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--br-font-serif);
+  font-size: 19px;
+}
+.review-card__body {
+  flex: 1;
+  min-width: 0;
+}
+.review-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.review-card__name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--br-ink);
+}
+.review-card__delete {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  color: #c0432e;
+  font-size: 13.5px;
+  cursor: pointer;
+  font-family: var(--br-font-sans);
+}
+.review-card__delete:hover {
+  text-decoration: underline;
+}
+.review-card__text {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--br-ink-soft);
+  margin-top: 6px;
+  text-wrap: pretty;
+}
+
+/* ===========================================================
+   RESPONSIVE
+   =========================================================== */
+@media (max-width: 560px) {
+  .libd-hero {
+    padding: 32px 20px 28px;
+  }
+  .libd-hero__name {
+    font-size: 30px;
+  }
+  .libd-hero__meta {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .libd-card {
+    padding: 24px 20px;
+  }
+}
