@@ -7,6 +7,7 @@ import com.bookrental.app.mapper.LibraryMapper;
 import com.bookrental.app.service.LibraryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class LibraryController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<LibraryResponseDTO> create(@Valid @RequestBody LibraryRequestDTO libraryRequestDTO) {
         Library libraryToCreate = LibraryMapper.mapLibraryRequestDTO2Library(libraryRequestDTO);
         Library createdLibrary = libraryService.create(libraryToCreate);
@@ -30,6 +32,7 @@ public class LibraryController {
     }
 
     @PutMapping("/{libraryId}")
+    @PreAuthorize("hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<LibraryResponseDTO> update(@PathVariable Long libraryId,
                                                      @RequestBody LibraryRequestDTO libraryRequestDTO) {
 
@@ -60,6 +63,7 @@ public class LibraryController {
     }
 
     @DeleteMapping("/{libraryId}")
+    @PreAuthorize("hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<?> delete(@PathVariable Long libraryId) {
         libraryService.delete(libraryId);
         return ResponseEntity.noContent().build();

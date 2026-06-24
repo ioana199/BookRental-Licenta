@@ -1,0 +1,102 @@
+/* ============================================================
+   BookRental — sistem de design comun (paletă caldă)
+   Importă o singură dată în main.jsx:  import "./styles/theme.css";
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+
+:root {
+  /* Culori — aliniate la token-urile existente din aplicație */
+  --br-bg: #fdf8f5;
+  --br-surface: #ffffff;
+  --br-surface-soft: #f5ede3;
+  --br-ink: #3d2314;
+  --br-ink-soft: #7d5a4f;
+  --br-muted: #a0876d;
+  --br-primary: #e8896a;
+  --br-primary-strong: #c45c3a;
+  --br-accent-soft: #f5c6a0;
+  --br-accent-bg: #f0dbcb;
+  --br-line: rgba(61, 35, 20, 0.1);
+  --br-line-strong: rgba(61, 35, 20, 0.16);
+
+  /* Stări status rezervări */
+  --br-pending-bg: #f3e4c4;
+  --br-pending-fg: #9a7726;
+  --br-progress-bg: #d6e4f0;
+  --br-progress-fg: #3a6ea5;
+  --br-finished-bg: #dcead9;
+  --br-finished-fg: #3f7a4d;
+  --br-delayed-bg: #f0d6d2;
+  --br-delayed-fg: #b0452f;
+
+  /* Tipografie */
+  --br-font-serif: "Newsreader", Georgia, serif;
+  --br-font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  --br-font-mono: "Space Mono", ui-monospace, monospace;
+
+  /* Raze & umbre */
+  --br-radius: 14px;
+  --br-radius-sm: 10px;
+  --br-shadow: 0 1px 2px rgba(61, 35, 20, 0.05);
+  --br-shadow-lg: 0 20px 38px rgba(61, 35, 20, 0.14);
+}
+
+body {
+  background: var(--br-bg);
+  font-family: var(--br-font-sans);
+  color: var(--br-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Utilitare reutilizabile în toate paginile */
+.br-page {
+  padding: 40px 44px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.br-eyebrow {
+  font-family: var(--br-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--br-muted);
+}
+.br-title {
+  font-family: var(--br-font-serif);
+  font-size: 48px;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--br-ink);
+  margin: 10px 0 0;
+}
+.br-title--sm {
+  font-size: 38px;
+}
+
+/* Badge status rezervare — folosește .br-badge + .is-PENDING etc. */
+.br-badge {
+  font-family: var(--br-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.br-badge.is-PENDING {
+  background: var(--br-pending-bg);
+  color: var(--br-pending-fg);
+}
+.br-badge.is-IN_PROGRESS {
+  background: var(--br-progress-bg);
+  color: var(--br-progress-fg);
+}
+.br-badge.is-FINISHED {
+  background: var(--br-finished-bg);
+  color: var(--br-finished-fg);
+}
+.br-badge.is-DELAYED {
+  background: var(--br-delayed-bg);
+  color: var(--br-delayed-fg);
+}

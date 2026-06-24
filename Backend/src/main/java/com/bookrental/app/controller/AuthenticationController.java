@@ -32,13 +32,6 @@ class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body(identityProviderService.refreshToken(refreshToken));
     }
 
-//    @GetMapping("whoami")
-//    public ResponseEntity<Map<String, Object>> whoami(Principal principal) {
-//        Map<String, Object> claim = new HashMap<>();
-//        claim.put("id", principal.getName());
-//        return ResponseEntity.status(HttpStatus.OK).body(claim);
-//    }
-
     @GetMapping("whoami")
     public ResponseEntity<?> whoami(Principal principal) {
         Map<String, Object> claim = new HashMap<>();

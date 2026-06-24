@@ -51,7 +51,7 @@ public class ReservationController {
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_role_admin')")
+    @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<Reservation> updateStatus(@PathVariable Long id, @RequestParam StatusReservation newStatus) {
         Reservation updatedReservation = reservationService.updateReservationStatus(id, newStatus);
 
@@ -60,7 +60,7 @@ public class ReservationController {
 
     @Transactional
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_role_admin')")
+    @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<List<ReservationResponseDTO>> getAll() {
         List<Reservation> reservations = reservationService.getAll();
         List<ReservationResponseDTO> dtos = reservations.stream()

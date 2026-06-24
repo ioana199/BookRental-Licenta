@@ -1,3 +1,4 @@
+/*
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -51,7 +52,6 @@ function HomePage() {
 
   return (
     <div style={{ fontFamily: "sans-serif" }}>
-      {/* NAVBAR */}
       <div
         style={{
           display: "flex",
@@ -132,7 +132,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* BANNER */}
       <div
         style={{
           background: "linear-gradient(135deg, #3D2314 0%, #5C3D2E 100%)",
@@ -144,8 +143,8 @@ function HomePage() {
           gap: "48px",
         }}
       >
-        {/* Text stânga */}
-        <div style={{ flex: 1, maxWidth: "600px" }}>
+
+      <div style={{ flex: 1, maxWidth: "600px" }}>
           <Title
             style={{ color: "#F5C6A0", fontSize: "48px", marginBottom: "16px" }}
           >
@@ -202,7 +201,6 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Logo 3D dreapta — înlocuiește Book3D */}
         <div
           style={{
             display: "flex",
@@ -222,7 +220,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* CĂRȚI */}
       <div id="books" style={{ padding: "64px 48px", background: "#fdf8f5" }}>
         <Title level={2} style={{ textAlign: "center", marginBottom: "40px" }}>
           Cărți disponibile
@@ -322,7 +319,6 @@ function HomePage() {
         )}
       </div>
 
-      {/* BIBLIOTECI */}
       <div
         id="libraries"
         style={{ padding: "64px 48px", background: "#FDF8F5 " }}
@@ -370,7 +366,6 @@ function HomePage() {
         )}
       </div>
 
-      {/* CONTACT */}
       <div id="contact" style={{ padding: "64px 48px", background: "#fdf8f5" }}>
         <Title level={2} style={{ textAlign: "center", marginBottom: "40px" }}>
           Contactează-ne
@@ -418,7 +413,6 @@ function HomePage() {
         </Card>
       </div>
 
-      {/* FOOTER */}
       <div
         style={{
           background: "#3D2314 ",
@@ -431,6 +425,302 @@ function HomePage() {
           © 2026 BookRental. Toate drepturile rezervate.
         </Text>
       </div>
+    </div>
+  );
+}
+
+export default HomePage;
+*/
+import { useEffect, useState } from "react";
+import { Button, Form, Input, message, Empty } from "antd";
+import { useNavigate } from "react-router-dom";
+import publicAxios from "../api/publicAxios";
+import axiosInstance from "../api/axiosInstance";
+import { useKeycloak } from "@react-keycloak/web";
+import BookMedallion3D from "../components/BookMedallion3D";
+import "./homePage.css";
+
+const { TextArea } = Input;
+
+function HomePage() {
+  const [books, setBooks] = useState([]);
+  const [libraries, setLibraries] = useState([]);
+  const [contactForm] = Form.useForm();
+  const [contactLoading, setContactLoading] = useState(false);
+  const navigate = useNavigate();
+  const { keycloak } = useKeycloak();
+  const isAuthenticated = keycloak.authenticated;
+
+  useEffect(() => {
+    publicAxios.get("/books/all").then((res) => setBooks(res.data));
+    publicAxios.get("/libraries/all").then((res) => setLibraries(res.data));
+  }, []);
+
+  const handleContact = () => {
+    contactForm.validateFields().then((values) => {
+      setContactLoading(true);
+      axiosInstance
+        .post("/contact", values)
+        .then(() => {
+          message.success("Mesaj trimis cu succes!");
+          contactForm.resetFields();
+        })
+        .catch(() => message.error("A apărut o eroare!"))
+        .finally(() => setContactLoading(false));
+    });
+  };
+
+  const goToApp = () =>
+    navigate(
+      keycloak.tokenParsed?.realm_access?.roles?.includes("user")
+        ? "/user/books"
+        : "/librarian/users",
+    );
+
+  return (
+    <div className="home">
+      {/* NAVBAR */}
+      <header className="home-nav">
+        <div
+          className="home-nav__brand"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <span className="home-nav__logo">BookRental</span>
+          <span className="home-nav__tag">RENT A BOOK, TAKE A LOOK</span>
+        </div>
+        <nav className="home-nav__links">
+          <a href="#books">Cărți</a>
+          <a href="#libraries">Biblioteci</a>
+          <a href="#contact">Contact</a>
+          {isAuthenticated ? (
+            <Button type="primary" className="btn-primary" onClick={goToApp}>
+              Mergi la aplicație
+            </Button>
+          ) : (
+            <>
+              <Button
+                className="btn-ghost"
+                onClick={() => navigate("/register")}
+              >
+                Înregistrare
+              </Button>
+              <Button
+                type="primary"
+                className="btn-primary"
+                onClick={() => navigate("/")}
+              >
+                Autentificare
+              </Button>
+            </>
+          )}
+        </nav>
+      </header>
+
+      {/* BANNER */}
+      <section className="home-hero">
+        <div className="home-hero__inner">
+          <div className="home-hero__text">
+            <div className="br-eyebrow home-hero__eyebrow">
+              Biblioteca ta digitală
+            </div>
+            <h1 className="home-hero__title">
+              Bine ai venit la <em>BookRental.</em>
+            </h1>
+            <p className="home-hero__lead">
+              Descoperă mii de cărți disponibile în bibliotecile din orașul tău.
+              Rezervă online, simplu și rapid.
+            </p>
+            <div className="home-hero__cta">
+              {isAuthenticated ? (
+                <Button
+                  size="large"
+                  type="primary"
+                  className="btn-primary"
+                  onClick={() => navigate("/user/books")}
+                >
+                  Mergi la aplicație
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    size="large"
+                    type="primary"
+                    className="btn-primary"
+                    onClick={() => navigate("/register")}
+                  >
+                    Creează cont gratuit
+                  </Button>
+                  <Button
+                    size="large"
+                    className="btn-outline-light"
+                    onClick={() => navigate("/")}
+                  >
+                    Autentifică-te
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="home-hero__art">
+            <BookMedallion3D size={320} />
+            <span className="home-hero__hint">trage pentru a roti · 3D</span>
+          </div>
+        </div>
+      </section>
+
+      {/* CĂRȚI */}
+      <section id="books" className="home-section">
+        <div className="home-section__head">
+          <div className="br-eyebrow">Acum în catalog</div>
+          <h2 className="home-section__title">Cărți disponibile</h2>
+        </div>
+        {books.length === 0 ? (
+          <Empty description="Nu există cărți" />
+        ) : (
+          <>
+            <div className="home-books">
+              {books.slice(0, 12).map((book) => (
+                <div
+                  className="home-book"
+                  key={book.id}
+                  onClick={() =>
+                    navigate(isAuthenticated ? `/user/books/${book.id}` : "/")
+                  }
+                >
+                  <div className="home-book__cover">
+                    {book.imageUrl ? (
+                      <img src={book.imageUrl} alt={book.title} />
+                    ) : (
+                      <div className="home-book__fallback">
+                        <span>📚</span>
+                        <strong>{book.title}</strong>
+                      </div>
+                    )}
+                  </div>
+                  <div className="home-book__title">{book.title}</div>
+                  <div className="home-book__author">
+                    {book.authorFirstName} {book.authorLastName}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="home-books__more">
+              <Button
+                className="btn-more"
+                onClick={() => navigate(isAuthenticated ? "/user/books" : "/")}
+              >
+                {isAuthenticated
+                  ? "Vezi toate cărțile →"
+                  : "Autentifică-te pentru mai mult →"}
+              </Button>
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* BIBLIOTECI */}
+      <section id="libraries" className="home-libraries">
+        <div className="home-section__head">
+          <div className="br-eyebrow">Rețeaua noastră</div>
+          <h2 className="home-section__title">Bibliotecile noastre</h2>
+        </div>
+        {libraries.length === 0 ? (
+          <Empty description="Nu există biblioteci" />
+        ) : (
+          <div className="home-lib-grid">
+            {libraries.map((library) => (
+              <div className="lib-card" key={library.id}>
+                <div className="lib-card__icon">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#C45C3A"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6" />
+                  </svg>
+                </div>
+                <div className="lib-card__name">{library.name}</div>
+                <div className="lib-card__meta">
+                  <span className="lib-card__city">
+                    <i></i>
+                    {library.city}
+                  </span>
+                  <span className="lib-card__contact">{library.email}</span>
+                  <span className="lib-card__contact">
+                    {library.phoneNumber}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="home-contact">
+        <div className="home-section__head">
+          <div className="br-eyebrow">Ai o întrebare?</div>
+          <h2 className="home-section__title">Contactează-ne</h2>
+        </div>
+        <div className="contact-card">
+          <Form form={contactForm} layout="vertical">
+            <div className="contact-row">
+              <Form.Item
+                name="name"
+                label="Nume"
+                rules={[{ required: true, message: "Numele este obligatoriu" }]}
+              >
+                <Input placeholder="Numele tău" />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  { required: true, message: "Email-ul este obligatoriu" },
+                  { type: "email", message: "Email invalid" },
+                ]}
+              >
+                <Input placeholder="email@exemplu.com" />
+              </Form.Item>
+            </div>
+            <Form.Item
+              name="message"
+              label="Mesaj"
+              rules={[{ required: true, message: "Mesajul este obligatoriu" }]}
+            >
+              <TextArea rows={4} placeholder="Scrie mesajul tău aici..." />
+            </Form.Item>
+            <Button
+              type="primary"
+              block
+              className="btn-primary"
+              onClick={handleContact}
+              loading={contactLoading}
+            >
+              Trimite mesaj
+            </Button>
+          </Form>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="home-footer">
+        <div className="home-footer__brand">
+          <span className="home-footer__logo">BookRental</span>
+          <span className="home-footer__tag">RENT A BOOK, TAKE A LOOK</span>
+        </div>
+        <div className="home-footer__links">
+          <a href="#books">Cărți</a>
+          <a href="#libraries">Biblioteci</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <span className="home-footer__copy">© 2026 BookRental</span>
+      </footer>
     </div>
   );
 }

@@ -1,0 +1,462 @@
+/* ===========================================================
+   Acasă (landing public) — homePage
+   Necesită variabilele din styles/theme.css
+   =========================================================== */
+
+.home {
+  color: var(--br-ink);
+}
+.home *,
+.home *::before,
+.home *::after {
+  box-sizing: border-box;
+}
+
+/* ---------- Butoane reutilizate pe landing ---------- */
+.btn-primary.ant-btn {
+  background: var(--br-primary);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.btn-primary.ant-btn:hover {
+  background: var(--br-primary-strong) !important;
+}
+
+.btn-ghost.ant-btn {
+  border-radius: 10px;
+  border-color: var(--br-line-strong);
+}
+.btn-outline-light.ant-btn {
+  border-radius: 10px;
+  background: transparent;
+  border-color: var(--br-accent-soft);
+  color: var(--br-accent-soft);
+}
+.btn-outline-light.ant-btn:hover {
+  border-color: #fff !important;
+  color: #fff !important;
+}
+.btn-soft.ant-btn {
+  margin-top: 8px;
+  border-radius: 8px;
+  border-color: var(--br-line);
+  color: var(--br-ink-soft);
+}
+.btn-soft.ant-btn:hover {
+  border-color: var(--br-primary) !important;
+  color: var(--br-primary-strong) !important;
+}
+
+/* ---------- Navbar ---------- */
+.home-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 48px;
+  height: 80px;
+  background: var(--br-ink);
+}
+.home-nav__brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  cursor: pointer;
+}
+.home-nav__logo {
+  font-family: var(--br-font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--br-bg);
+  letter-spacing: -0.01em;
+}
+.home-nav__tag {
+  font-family: var(--br-font-mono);
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  color: var(--br-accent-soft);
+  margin-top: 4px;
+}
+.home-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.home-nav__links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  opacity: 0.85;
+}
+.home-nav__links a:hover {
+  opacity: 1;
+}
+
+/* ---------- Hero / banner ---------- */
+.home-hero {
+  background: linear-gradient(135deg, #3d2314 0%, #5c3d2e 100%);
+  color: var(--br-bg);
+  overflow: hidden;
+}
+.home-hero__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 72px 48px 80px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.home-hero__text {
+  flex: 1;
+  min-width: 0;
+}
+.home-hero__eyebrow {
+  color: var(--br-accent-soft);
+}
+.home-hero__title {
+  font-family: var(--br-font-serif);
+  font-size: 64px;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 18px 0 0;
+  font-weight: 500;
+}
+.home-hero__title em {
+  color: var(--br-accent-soft);
+  font-style: italic;
+}
+.home-hero__lead {
+  font-size: 18px;
+  color: #c9b6a2;
+  margin-top: 22px;
+  max-width: 480px;
+  line-height: 1.6;
+}
+.home-hero__cta {
+  display: flex;
+  gap: 14px;
+  margin-top: 34px;
+}
+.home-hero__art {
+  flex: none;
+  width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.home-hero__hint {
+  font-family: var(--br-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245, 198, 160, 0.65);
+  margin-top: 8px;
+}
+
+/* ---------- Secțiuni generice ---------- */
+.home-section {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 64px 48px 30px;
+}
+.home-section__head {
+  text-align: center;
+}
+.home-section__title {
+  font-family: var(--br-font-serif);
+  font-size: 42px;
+  letter-spacing: -0.02em;
+  margin: 10px 0 0;
+}
+
+/* Cărți */
+.home-books {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+}
+.home-book {
+  transition: transform 0.22s ease;
+  cursor: pointer;
+  min-width: 0;
+}
+.home-book:hover {
+  transform: translateY(-6px);
+}
+.home-book__cover {
+  position: relative;
+  width: 100%;
+  padding-bottom: 150%;
+  border-radius: 4px 8px 8px 4px;
+  overflow: hidden;
+  background: var(--br-surface-soft);
+  box-shadow: 4px 4px 12px rgba(61, 35, 20, 0.22);
+}
+.home-book__cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home-book__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--br-primary), var(--br-accent-soft));
+  color: #fff;
+}
+.home-book__fallback span {
+  font-size: 30px;
+}
+.home-book__fallback strong {
+  font-size: 12px;
+}
+.home-book__title {
+  font-family: var(--br-font-serif);
+  font-size: 15.5px;
+  line-height: 1.25;
+  margin-top: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.home-book__author {
+  font-size: 12.5px;
+  color: var(--br-ink-soft);
+  margin-top: 2px;
+}
+
+/* CTA sub grid */
+.home-books__more {
+  text-align: center;
+  margin-top: 44px;
+}
+.btn-more.ant-btn {
+  height: auto;
+  padding: 14px 32px;
+  border-radius: 40px;
+  background: var(--br-surface);
+  border: 1px solid var(--br-line-strong);
+  color: var(--br-ink);
+  font-weight: 600;
+  font-size: 15px;
+}
+.btn-more.ant-btn:hover {
+  border-color: var(--br-primary) !important;
+  color: var(--br-primary-strong) !important;
+}
+
+/* Biblioteci */
+.home-libraries {
+  background: var(--br-surface-soft);
+  border-top: 1px solid var(--br-line);
+  border-bottom: 1px solid var(--br-line);
+  padding: 64px 48px;
+}
+.home-libraries .home-section__head {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.home-lib-grid {
+  max-width: 1240px;
+  margin: 40px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.lib-card {
+  background: var(--br-surface);
+  border: 1px solid var(--br-line);
+  border-radius: 16px;
+  padding: 26px 24px;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+.lib-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--br-shadow-lg);
+}
+.lib-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--br-accent-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lib-card__name {
+  font-family: var(--br-font-serif);
+  font-size: 21px;
+  margin-top: 18px;
+}
+.lib-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 12px;
+}
+.lib-card__city {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--br-ink-soft);
+}
+.lib-card__city i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--br-primary-strong);
+}
+.lib-card__contact {
+  font-family: var(--br-font-mono);
+  font-size: 13px;
+  color: var(--br-muted);
+}
+
+/* Contact */
+.home-contact {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 48px 80px;
+}
+.contact-card {
+  background: var(--br-surface);
+  border: 1px solid var(--br-line);
+  border-radius: 16px;
+  padding: 34px 36px;
+  margin-top: 34px;
+  box-shadow: var(--br-shadow);
+}
+.contact-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* Footer */
+.home-footer {
+  background: var(--br-ink);
+  color: #c9b6a2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 100%;
+  padding: 40px 48px;
+}
+.home-footer__brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.home-footer__logo {
+  font-family: var(--br-font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--br-bg);
+}
+.home-footer__tag {
+  font-family: var(--br-font-mono);
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  color: #7e6b59;
+  margin-top: 5px;
+}
+.home-footer__links {
+  display: flex;
+  gap: 28px;
+}
+.home-footer__links a {
+  color: #c9b6a2;
+  text-decoration: none;
+  font-size: 14px;
+}
+.home-footer__links a:hover {
+  color: #fff;
+}
+.home-footer__copy {
+  font-family: var(--br-font-mono);
+  font-size: 11px;
+  color: #7e6b59;
+}
+
+/* ===========================================================
+   RESPONSIVE
+   =========================================================== */
+@media (max-width: 1080px) {
+  .home-books {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .home-lib-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .home-hero__inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 56px 28px 64px;
+  }
+  .home-hero__lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .home-hero__cta {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .home-hero__art {
+    width: 100%;
+  }
+  .home-hero__title {
+    font-size: 48px;
+  }
+}
+@media (max-width: 760px) {
+  .home-nav {
+    padding: 0 20px;
+    gap: 14px;
+  }
+  .home-nav__links {
+    gap: 16px;
+  }
+  .home-nav__links a {
+    display: none;
+  } /* pe mobil rămân doar butoanele */
+  .home-section,
+  .home-libraries,
+  .home-contact {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .home-books {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .home-section__title,
+  .home-hero__title {
+    font-size: 38px;
+  }
+  .contact-row {
+    grid-template-columns: 1fr;
+  }
+  .home-footer {
+    padding: 28px 20px;
+  }
+}

@@ -1,0 +1,76 @@
+/* Medalion 3D BookRental — folosit pe Acasă (banner) */
+
+.medallion-scene {
+  perspective: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+}
+.medallion-scene:active {
+  cursor: grabbing;
+}
+
+.medallion-float {
+  width: 100%;
+  height: 100%;
+  animation: medallion-float 4s ease-in-out infinite;
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
+}
+
+.medallion-spin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.medallion-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.medallion-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8%;
+  backface-visibility: hidden;
+}
+.medallion-wordmark {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.6rem;
+  color: #3d2314;
+  letter-spacing: -0.01em;
+}
+.medallion-est {
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.24em;
+  color: #c99e7e;
+}
+
+@keyframes medallion-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+/* Pe ecrane mici reducem un pic dimensiunea fontului din medalion */
+@media (max-width: 600px) {
+  .medallion-wordmark {
+    font-size: 1.3rem;
+  }
+}

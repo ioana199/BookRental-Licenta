@@ -1,0 +1,100 @@
+/* ===========================================================
+   UserLayout — header cititor
+   Necesită fonturile din styles/theme.css (încărcat global în main.jsx)
+   =========================================================== */
+
+.user-header.ant-layout-header {
+  display: flex;
+  align-items: stretch; /* itemii umplu toată înălțimea */
+  justify-content: space-between;
+  padding: 0 0 0 28px;
+  background: #3d2314;
+  height: 80px;
+  line-height: normal;
+}
+
+/* Brand */
+.user-header__brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+}
+.user-header__logo {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fdf8f5;
+  letter-spacing: -0.01em;
+}
+.user-header__tag {
+  font-family: "Space Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  color: #f5c6a0;
+  margin-top: 4px;
+}
+
+/* Navigație — tab-uri pe toată înălțimea */
+.user-nav {
+  display: flex;
+  align-items: stretch;
+  height: 80px;
+  margin-left: 40px;
+  flex: 1;
+}
+.user-nav__item {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 22px;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 15px;
+  color: rgba(244, 236, 224, 0.74);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  white-space: nowrap;
+}
+.user-nav__item:hover {
+  color: #fdf8f5;
+}
+.user-nav__item.is-active {
+  background: #c45c3a; /* blocul portocaliu pe toată înălțimea */
+  color: #fff;
+}
+
+/* Logout */
+.user-header__logout {
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  color: #f5c6a0;
+  cursor: pointer;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 14.5px;
+  flex: none;
+}
+.user-header__logout:hover {
+  color: #fff;
+}
+
+/* Responsive: pe ecrane mici ascundem tagline-ul și strângem spațiile */
+@media (max-width: 900px) {
+  .user-header__tag {
+    display: none;
+  }
+  .user-nav {
+    margin-left: 18px;
+  }
+  .user-nav__item {
+    padding: 0 13px;
+    font-size: 14px;
+  }
+  .user-header__logout {
+    padding: 0 16px;
+  }
+}
