@@ -226,7 +226,9 @@ function AppLayout({ children }) {
           }}
         >
           <button
-            onClick={() => keycloak.logout()}
+            onClick={() =>
+              keycloak.logout({ redirectUri: window.location.origin + "/home" })
+            }
             style={{
               width: "100%",
               cursor: "pointer",

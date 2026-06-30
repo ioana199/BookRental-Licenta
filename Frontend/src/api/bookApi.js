@@ -8,3 +8,4 @@ export const deleteBook = (id) => axiosInstance.delete(`/books/${id}`);
 export const getBookById = (id) => axiosInstance.get(`/books/${id}`);
 export const getLibrariesForBook = (id) =>
   axiosInstance.get(`/books/${id}/libraries`);
+export const getTop10Books = () => axiosInstance.get("/books/top10");

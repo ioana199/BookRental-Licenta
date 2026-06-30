@@ -14,6 +14,7 @@ import com.bookrental.app.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,8 +62,19 @@ public class ReservationController {
     @Transactional
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ROLE_realm_librarian') or hasAuthority('ROLE_realm_admin')")
-    public ResponseEntity<List<ReservationResponseDTO>> getAll() {
-        List<Reservation> reservations = reservationService.getAll();
+    public ResponseEntity<List<ReservationResponseDTO>> getAll(Principal principal) {
+
+        JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
+
+        boolean isAdmin = token.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_realm_admin"));
+
+        String email = token.getToken().getClaimAsString("email");
+
+        List<Reservation> reservations = isAdmin
+                ? reservationService.getAll()
+                : reservationService.getReservationsForLibrarian(email);
+
         List<ReservationResponseDTO> dtos = reservations.stream()
                 .map(ReservationMapper::mapReservation2ReservationResponseDTO)
                 .toList();

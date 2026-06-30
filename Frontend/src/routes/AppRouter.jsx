@@ -30,8 +30,22 @@ import RegisterPage from "../pages/RegisterPage";
 import { useLocation } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 
+const RedirectToLogin = ({ keycloak }) => {
+  useEffect(() => {
+    if (!keycloak.authenticated) {
+      keycloak.login();
+    }
+  }, [keycloak]);
+
+  return <div>Se redirecționează către pagina de login...</div>;
+};
+
 function AppRouter() {
-  const { keycloak } = useKeycloak();
+  const { keycloak, initialized } = useKeycloak();
+
+  if (!initialized) {
+    return <div>Se încarcă aplicația...</div>;
+  }
 
   return (
     <BrowserRouter>
@@ -43,14 +57,6 @@ function AppRouter() {
 function AppRouterInner({ keycloak }) {
   const location = useLocation();
 
-  if (location.pathname === "/home") {
-    return (
-      <Routes>
-        <Route path="/home" element={<HomePage />} />
-      </Routes>
-    );
-  }
-
   if (location.pathname === "/register") {
     return (
       <Routes>
@@ -59,26 +65,36 @@ function AppRouterInner({ keycloak }) {
     );
   }
 
+  if (location.pathname === "/home" || location.pathname === "/") {
+    return (
+      <Routes>
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    );
+  }
+
   if (!keycloak.authenticated) {
-    keycloak.login();
-    return null;
+    return (
+      <Routes>
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
+    );
   }
 
   const roles = keycloak.tokenParsed?.realm_access?.roles || [];
   const clientRoles =
     keycloak.tokenParsed?.resource_access?.book_rental?.roles || [];
-
   const isUser = roles.includes("user") || clientRoles.includes("user");
   const isLibrarian =
     roles.includes("librarian") || clientRoles.includes("librarian");
-  const isAdmin =
-    roles.includes("role_admin") || clientRoles.includes("role_admin");
+  const isAdmin = roles.includes("admin") || clientRoles.includes("role_admin");
 
   if (isUser) {
     return (
       <UserLayout>
         <Routes>
-          <Route path="/" element={<Navigate to="/user/books" />} />
+          <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/user/profile" element={<ProfilePage />} />
           <Route path="/user/libraries" element={<LibrariesPage />} />
           <Route path="/user/books" element={<UserBooksPage />} />
@@ -96,7 +112,7 @@ function AppRouterInner({ keycloak }) {
     return (
       <AppLayout>
         <Routes>
-          <Route path="/" element={<Navigate to="/librarian/users" />} />
+          <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/librarian/users" element={<UserListPage />} />
           <Route path="/librarian/publishers" element={<PublishersPage />} />
           <Route path="/librarian/authors" element={<AuthorsPage />} />
@@ -116,7 +132,7 @@ function AppRouterInner({ keycloak }) {
     return (
       <AppLayout>
         <Routes>
-          <Route path="/" element={<Navigate to="/admin/users" />} />
+          <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/librarian/users" element={<UserListPage />} />
           <Route path="/librarian/publishers" element={<PublishersPage />} />
           <Route path="/librarian/authors" element={<AuthorsPage />} />
@@ -145,7 +161,6 @@ function AppRouterInner({ keycloak }) {
       </AppLayout>
     );
   }
-
   return <div>Rol necunoscut</div>;
 }
 

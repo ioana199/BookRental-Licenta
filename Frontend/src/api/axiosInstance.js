@@ -1,8 +1,8 @@
-import axios from 'axios';
-import keycloak from '../auth/keycloak';
+import axios from "axios";
+import keycloak from "../auth/keycloak";
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: "http://localhost:8080/api",
 });
 
 axiosInstance.interceptors.request.use((config) => {

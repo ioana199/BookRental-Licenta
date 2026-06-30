@@ -431,6 +431,7 @@ function HomePage() {
 
 export default HomePage;
 */
+
 import { useEffect, useState } from "react";
 import { Button, Form, Input, message, Empty } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -452,7 +453,7 @@ function HomePage() {
   const isAuthenticated = keycloak.authenticated;
 
   useEffect(() => {
-    publicAxios.get("/books/all").then((res) => setBooks(res.data));
+    publicAxios.get("/books/top10").then((res) => setBooks(res.data));
     publicAxios.get("/libraries/all").then((res) => setLibraries(res.data));
   }, []);
 
@@ -507,7 +508,7 @@ function HomePage() {
               <Button
                 type="primary"
                 className="btn-primary"
-                onClick={() => navigate("/")}
+                onClick={() => navigate(keycloak.login())}
               >
                 Autentificare
               </Button>
@@ -553,7 +554,7 @@ function HomePage() {
                   <Button
                     size="large"
                     className="btn-outline-light"
-                    onClick={() => navigate("/")}
+                    onClick={() => keycloak.login()}
                   >
                     Autentifică-te
                   </Button>
@@ -571,50 +572,40 @@ function HomePage() {
       {/* CĂRȚI */}
       <section id="books" className="home-section">
         <div className="home-section__head">
-          <div className="br-eyebrow">Acum în catalog</div>
-          <h2 className="home-section__title">Cărți disponibile</h2>
+          <div className="br-eyebrow">Cele mai populare</div>
+          <h2 className="home-section__title">Cele mai rezervate cărți</h2>
         </div>
         {books.length === 0 ? (
           <Empty description="Nu există cărți" />
         ) : (
-          <>
-            <div className="home-books">
-              {books.slice(0, 12).map((book) => (
-                <div
-                  className="home-book"
-                  key={book.id}
-                  onClick={() =>
-                    navigate(isAuthenticated ? `/user/books/${book.id}` : "/")
-                  }
-                >
-                  <div className="home-book__cover">
-                    {book.imageUrl ? (
-                      <img src={book.imageUrl} alt={book.title} />
-                    ) : (
-                      <div className="home-book__fallback">
-                        <span>📚</span>
-                        <strong>{book.title}</strong>
-                      </div>
-                    )}
-                  </div>
-                  <div className="home-book__title">{book.title}</div>
-                  <div className="home-book__author">
-                    {book.authorFirstName} {book.authorLastName}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="home-books__more">
-              <Button
-                className="btn-more"
-                onClick={() => navigate(isAuthenticated ? "/user/books" : "/")}
+          <div className="home-books">
+            {books.map((book) => (
+              <div
+                className="home-book"
+                key={book.id}
+                onClick={() =>
+                  navigate(
+                    isAuthenticated ? `/user/books/${book.id}` : "/register",
+                  )
+                }
               >
-                {isAuthenticated
-                  ? "Vezi toate cărțile →"
-                  : "Autentifică-te pentru mai mult →"}
-              </Button>
-            </div>
-          </>
+                <div className="home-book__cover">
+                  {book.imageUrl ? (
+                    <img src={book.imageUrl} alt={book.title} />
+                  ) : (
+                    <div className="home-book__fallback">
+                      <span>📚</span>
+                      <strong>{book.title}</strong>
+                    </div>
+                  )}
+                </div>
+                <div className="home-book__title">{book.title}</div>
+                <div className="home-book__author">
+                  {book.authorFirstName} {book.authorLastName}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </section>
 
