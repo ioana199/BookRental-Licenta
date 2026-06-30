@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
+    //@PreAuthorize("hasAnyAuthority('ROLE_realm_librarian','ROLE_realm_admin')")
     public ResponseEntity<List<UserResponseDTO>> getAll() {
         List<User> users = userService.getAll();
         List<UserResponseDTO> userResponseDTOS = users
@@ -66,6 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_realm_user','ROLE_realm_admin')")
     public ResponseEntity<UserResponseDTO> getById(@PathVariable Long userId) {
         User user = userService.findById(userId);
         UserResponseDTO userResponseDTO = UserMapper.mapUser2UserResponseDTO(user);

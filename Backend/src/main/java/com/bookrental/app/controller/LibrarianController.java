@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/librarians")
-@PreAuthorize("hasAuthority('ROLE_realm_admin')")
 public class LibrarianController {
     private final LibrarianService librarianService;
 
@@ -24,6 +23,7 @@ public class LibrarianController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<LibrarianResponseDTO> create(@RequestParam(required = false) Long libraryId, @Valid @RequestBody LibrarianRequestCreateDTO librarianRequestCreateDTO) {
         Librarian librarianToCreate = LibrarianMapper.mapLibrarianRequestCreateDTO2Librarian(librarianRequestCreateDTO);
         Librarian createdLibrarian;
@@ -37,6 +37,7 @@ public class LibrarianController {
     }
 
     @PutMapping("/{librarianId}")
+    @PreAuthorize("hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<LibrarianResponseDTO> update(@PathVariable Long librarianId,
                                                        @RequestBody LibrarianRequestUpdateDTO librarianRequestUpdateDTO) {
         Librarian librarianToUpdate = LibrarianMapper.mapLibrarianRequestUpdateDTO2Librarian(librarianRequestUpdateDTO);
@@ -66,6 +67,7 @@ public class LibrarianController {
     }
 
     @DeleteMapping("/{librarianId}")
+    @PreAuthorize("hasAuthority('ROLE_realm_admin')")
     public ResponseEntity<?> delete(@PathVariable Long librarianId) {
         librarianService.delete(librarianId);
         return ResponseEntity.noContent().build();

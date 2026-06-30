@@ -127,7 +127,12 @@ function UserLayout({ children }) {
           ))}
         </nav>
 
-        <div className="user-header__logout" onClick={() => keycloak.logout()}>
+        <div
+          className="user-header__logout"
+          onClick={() =>
+            keycloak.logout({ redirectUri: window.location.origin + "/home" })
+          }
+        >
           Deconectare
         </div>
       </Header>

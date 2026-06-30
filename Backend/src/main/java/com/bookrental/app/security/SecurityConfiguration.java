@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/contact").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/books/all").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/libraries/all").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/books/top10").permitAll()
                                 .requestMatchers(
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",

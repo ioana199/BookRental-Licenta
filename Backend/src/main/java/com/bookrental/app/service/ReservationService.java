@@ -10,6 +10,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.SystemException;
 import jakarta.ws.rs.NotFoundException;
 import org.keycloak.jose.jwk.JWK;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +28,17 @@ public class ReservationService {
     private final ExemplaryRepository exemplaryRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final LibrarianRepository librarianRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
                               ExemplaryRepository exemplaryRepository,
                               UserRepository userRepository,
-                              EmailService emailService) {
+                              EmailService emailService, LibrarianRepository librarianRepository) {
         this.reservationRepository = reservationRepository;
         this.exemplaryRepository = exemplaryRepository;
         this.userRepository = userRepository;
         this.emailService = emailService;
+        this.librarianRepository = librarianRepository;
     }
 
     /*
@@ -127,7 +130,7 @@ public class ReservationService {
     @Transactional
     public Reservation create(Long bookId, Long libraryId, LocalDate startDate, LocalDate endDate, Long userId) {
         try {
-            List<Exemplary> exemplars = exemplaryRepository.findAvailableExemplar(bookId, libraryId, startDate, endDate,  LocalDate.now().plusDays(1));
+            List<Exemplary> exemplars = exemplaryRepository.findAvailableExemplar(bookId, libraryId, startDate, endDate, LocalDate.now().plusDays(1));
             if (exemplars.isEmpty()) {
                 throw new NotFoundException("No books available, try again later.");
             }
@@ -142,7 +145,7 @@ public class ReservationService {
             reservation.setUser(user);
             reservation.setStatus(StatusReservation.PENDING);
 
-            reserveMail(user.getEmail());
+            reserveMail(user.getEmail(), reservation);
             updateContor(reservation);
             return reservationRepository.save(reservation);
         } catch (Exception e) {
@@ -165,12 +168,22 @@ public class ReservationService {
         }
     }
 
-    private void reserveMail(String email) {
-        String subject = "Book Rental Reservation";
-        String body = "We announce that the reservation was recieved";
+    @Async
+    private void reserveMail(String email, Reservation reservation) {
+        String subject = "Reservation Confirmation";
+        String body = "Dear " + reservation.getUser().getFirstName()
+                + "\nThank you for using our service. This email confirms that your reservation has been successfully processed.\n"
+                + "\nReservation Details: "
+                + "\nBook Title: " + reservation.getExemplary().getBook().getTitle()
+                + "\nPick-up Library: "+ reservation.getExemplary().getLibrary().getName()
+                + "\nLocation: " +reservation.getExemplary().getLibrary().getCity()
+                + "\n\nPlease ensure you pick up your copy within the allotted timeframe.\n" + "\n"
+                + "Best regards,\n"
+                + "The Book Rental Team";
         emailService.sendEmail(email, subject, body);
     }
 
+    @Async
     private void updateContor(Reservation reservation) {
         Integer contorVechi = reservation.getExemplary().getBook().getContorRezervari();
         if (contorVechi == null) contorVechi = 0;
@@ -190,5 +203,17 @@ public class ReservationService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    @Transactional
+    public List<Reservation> getReservationsForLibrarian(String email) {
+        Librarian librarian = librarianRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Bibliotecarul nu a fost găsit."));
+        Long libraryId = librarian.getLibrary().getId();
+        return reservationRepository.findAll().stream()
+                .filter(r -> r.getExemplary() != null
+                        && r.getExemplary().getLibrary() != null
+                        && libraryId.equals(r.getExemplary().getLibrary().getId()))
+                .toList();
     }
 }

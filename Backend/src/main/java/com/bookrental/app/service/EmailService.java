@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private JavaMailSender mailSender;
 
-    @Value("ioanaardelean199@gamil.com")
+    @Value("ioanaarelean199@gmail.com")
     private String sender;
 
     public EmailService(JavaMailSender mailSender) {
@@ -28,11 +28,4 @@ public class EmailService {
 
         mailSender.send(mailMessage);
     }
-/*
-    @Async
-    public void threadEmail() {
-        System.out.println("Thread din Email: " + Thread.currentThread().getName());
-    }
-
- */
 }

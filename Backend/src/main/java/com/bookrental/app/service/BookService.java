@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -67,7 +68,6 @@ public class BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
 
-        // Generăm rezumatul dacă nu există
         if (book.getSummary() == null || book.getSummary().isEmpty()) {
             String summary = openAIService.generateSummary(
                     book.getTitle(),
@@ -79,9 +79,9 @@ public class BookService {
                 bookRepository.save(book);
             }
         }
-
         return book;
     }
+
     public Book update(Long bookId, Book book, Long authorId, Long publisherId) {
         Book foundBook = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
 
@@ -148,12 +148,12 @@ public class BookService {
     }
 
     public List<Book> getTop10ByReservations() {
-        List<Book> booksSortedByContor = bookRepository.findAll().stream().sorted().toList();
-        List<Book> top10 = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            top10.add(booksSortedByContor.get(i));
-        }
-        return top10;
+        return bookRepository.findAll().stream()
+                .sorted(Comparator.comparingInt(
+                                (Book b) -> b.getContorRezervari() == null ? 0 : b.getContorRezervari())
+                        .reversed())
+                .limit(10)
+                .toList();
     }
 
     @Transactional

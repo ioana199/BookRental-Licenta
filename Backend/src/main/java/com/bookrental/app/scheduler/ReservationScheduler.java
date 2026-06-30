@@ -70,8 +70,13 @@ public class ReservationScheduler {
             reservationRepository.save(r);
 
             String to = r.getUser().getEmail();
-            String subject = "Friendly reminder: Your requested book is ready for pickup!";
-            String body = "Dear " + r.getUser().getFirstName() + ", This is a quick reminder that the book you requested, " + r.getExemplary().getBook().getTitle() + ", is waiting for you at the library " + r.getExemplary().getLibrary().getName();
+            String subject = "Your reservation has been canceled";
+            String body = "Dear " + r.getUser().getFirstName()
+                    + ", Unfortunately, your reservation for the book \""
+                    + r.getExemplary().getBook().getTitle()
+                    + "\" at the library " + r.getExemplary().getLibrary().getName()
+                    + " has been canceled because it was not picked up within 3 days. "
+                    + "You are welcome to place a new reservation at any time.";
             emailService.sendEmail(to, subject, body);
         }
     }
@@ -79,7 +84,8 @@ public class ReservationScheduler {
     @Transactional
     @Scheduled(cron = "0 0 20 * * *")
     public void setStatusDelayed() {
-        List<Reservation> reservationsInProgress = reservationRepository.findByStatusAndEndDate(StatusReservation.IN_PROGRESS, LocalDate.now());
+        List<Reservation> reservationsInProgress = reservationRepository
+                .findByStatusAndEndDate(StatusReservation.IN_PROGRESS, LocalDate.now());
 
         for (Reservation r : reservationsInProgress) {
             r.setStatus(StatusReservation.DELAYED);
@@ -87,7 +93,10 @@ public class ReservationScheduler {
 
             String to = r.getUser().getEmail();
             String subject = "Friendly Reminder: Overdue Book Return";
-            String body = "Dear " + r.getUser().getFirstName() + ", We hope you enjoyed your reading! This is a quick reminder that the book " + r.getExemplary().getBook().getTitle() + ", which you borrowed from " + r.getExemplary().getLibrary().getName() + ", is currently past its due date and has not yet been returned.";
+            String body = "Dear " + r.getUser().getFirstName()
+                    + ", We hope you enjoyed your reading! This is a quick reminder that the book "
+                    + r.getExemplary().getBook().getTitle() + ", which you borrowed from "
+                    + r.getExemplary().getLibrary().getName() + ", is currently past its due date and has not yet been returned.";
             emailService.sendEmail(to, subject, body);
         }
     }
@@ -95,22 +104,37 @@ public class ReservationScheduler {
     @Transactional
     @Scheduled(cron = "0 15 20 * * *")
     public void resolveConflictsForDelayedItems() {
-        List<Reservation> reservationsPending = reservationRepository.findByStatusAndStartDate(StatusReservation.PENDING, LocalDate.now().plusDays(1));
+        List<Reservation> reservationsPending = reservationRepository
+                .findByStatusAndStartDate(StatusReservation.PENDING, LocalDate.now().plusDays(1));
+
         for (Reservation r : reservationsPending) {
             List<Reservation> reservationsOfExemplary = r.getExemplary().getReservations();
+
             for (Reservation re : reservationsOfExemplary) {
                 if (re.getStatus().equals(StatusReservation.DELAYED)) {
                     r.setStatus(StatusReservation.CANCELED);
                     reservationRepository.save(r);
 
-                    Reservation newReservation = reservationService.create(re.getExemplary().getBook().getId(), re.getExemplary().getLibrary().getId(), re.getStartDate(), re.getEndDate(), re.getUser().getId());
-
-                    if (newReservation == null) {
+                    try {
+                        reservationService.create(
+                                r.getExemplary().getBook().getId(),
+                                r.getExemplary().getLibrary().getId(),
+                                r.getStartDate(),
+                                r.getEndDate(),
+                                r.getUser().getId());
+                    } catch (Exception e) {
                         String to = r.getUser().getEmail();
                         String subject = "Important update regarding your reservation";
-                        String body = "Dear " + r.getUser().getFirstName() + ", We are writing to inform you about an issue with your upcoming reservation for the book " + r.getExemplary().getBook().getTitle() + ", scheduled to begin tomorrow. Unfortunately, the previous borrower has not yet returned the specific copy reserved for you. We automatically tried to rebook another copy of the same book for your dates, but there are currently no other copies available at " + r.getExemplary().getLibrary().getName() + ". Please check back in a few days to place a new reservation once the book is returned.";
+                        String body = "Dear " + r.getUser().getFirstName()
+                                + ", We are writing to inform you about an issue with your upcoming reservation for the book "
+                                + r.getExemplary().getBook().getTitle()
+                                + ", scheduled to begin tomorrow. Unfortunately, the previous borrower has not yet returned the specific copy reserved for you. "
+                                + "We automatically tried to rebook another copy of the same book for your dates, but there are currently no other copies available at "
+                                + r.getExemplary().getLibrary().getName()
+                                + ". Please check back in a few days to place a new reservation once the book is returned.";
                         emailService.sendEmail(to, subject, body);
                     }
+
                     break;
                 }
             }

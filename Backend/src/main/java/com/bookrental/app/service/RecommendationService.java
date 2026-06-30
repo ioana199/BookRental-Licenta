@@ -20,13 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class RecommendationService {
 
-    /*
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
-
-    @Value("${gemini.api.url}")
-    private String geminiApiUrl;
-    */
     @Value("${openai.api.key}")
     private String openaiApiKey;
 
@@ -47,7 +40,6 @@ public class RecommendationService {
 
     @Transactional
     public List<Map<String, String>> getRecommendations(Long userId) {
-        // Obtinem cartile rezervate
         List<Reservation> reservations = reservationRepository.findAllByUserId(userId);
         List<String> reservedBooks = reservations.stream()
                 .map(r -> r.getExemplary().getBook().getTitle() + " de " +
@@ -56,13 +48,11 @@ public class RecommendationService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Obtinem cartile favorite
         List<Wishlist> wishlists = wishlistRepository.findByUserId(userId, org.springframework.data.domain.Pageable.unpaged()).getContent();
         List<String> favoriteBooks = wishlists.stream()
                 .map(w -> w.getBook().getTitle())
                 .collect(Collectors.toList());
 
-        // Obtinem toate cartile din aplicatie
         List<Book> allBooks = bookRepository.findAll();
         List<String> availableBooks = allBooks.stream()
                 .map(b -> b.getTitle() + " de " +
@@ -77,7 +67,6 @@ public class RecommendationService {
             ));
         }
 
-        // Construim promptul pentru Gemini
         String prompt = "Ești un sistem de recomandare de cărți. " +
                 "Utilizatorul a rezervat următoarele cărți: " + reservedBooks + ". " +
                 "Utilizatorul are la favorite următoarele cărți: " + favoriteBooks + ". " +
@@ -87,51 +76,6 @@ public class RecommendationService {
                 "Formatul exact trebuie să fie: " +
                 "[{\"title\": \"titlul cartii\", \"reason\": \"S-ar putea să îți placă această carte deoarece...\"}]" +
                 "Răspunsul trebuie să fie în limba română.";
-
-        // Apelam Gemini API
-        /*
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("x-goog-api-key", geminiApiKey);
-
-            String requestBody = "{\"contents\": [{\"parts\": [{\"text\": \"" +
-                    prompt.replace("\"", "\\\"").replace("\n", "\\n") + "\"}]}]}";
-
-            HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-            //String url = geminiApiUrl + "?key=" + geminiApiKey;
-            String url = geminiApiUrl; // ← fără ?key= la final
-
-            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-            // Parsam raspunsul
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(response.getBody());
-            String text = root.path("candidates").get(0)
-                    .path("content").path("parts").get(0)
-                    .path("text").asText();
-
-            // Curatam textul de markdown daca exista
-            text = text.trim();
-            if (text.startsWith("```")) {
-                text = text.replaceAll("```json", "").replaceAll("```", "").trim();
-            }
-
-            List<Map<String, String>> recommendations = mapper.readValue(text,
-                    mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
-
-            return recommendations;
-
-        } catch (Exception e) {
-            System.out.println("EROARE RECOMANDARI: " + e.getMessage());
-            e.printStackTrace();
-            return List.of(Map.of(
-                    "title", "Eroare",
-                    "reason", "Nu am putut genera recomandări în acest moment. Încearcă din nou!"
-            ));
-        }
-        */
 
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -164,6 +108,19 @@ public class RecommendationService {
             List<Map<String, String>> recommendations = mapper.readValue(text,
                     mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
 
+            for (Map<String, String> rec : recommendations) {
+                String recTitle = normalize(rec.get("title"));
+                allBooks.stream()
+                        .filter(b -> normalize(b.getTitle()).equals(recTitle))
+                        .findFirst()
+                        .ifPresent(b -> {
+                            rec.put("id", String.valueOf(b.getId()));
+                            rec.put("title", b.getTitle()); // titlul canonic din baza de date
+                            rec.put("imageUrl", b.getImageUrl() != null ? b.getImageUrl() : "");
+                            rec.put("author", b.getAuthor().getFirstName() + " " + b.getAuthor().getLastName());
+                        });
+            }
+
             return recommendations;
 
         } catch (Exception e) {
@@ -175,5 +132,13 @@ public class RecommendationService {
             ));
         }
 
+    }
+
+    private String normalize(String s) {
+        if (s == null) return "";
+        return java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")   // elimină diacriticele
+                .toLowerCase()
+                .trim();
     }
 }
